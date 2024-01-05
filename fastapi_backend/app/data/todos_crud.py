@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
-from uuid import uuid1, UUID
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException
+from uuid import UUID
 
 from ..data.sqlalchemy_models import TODO
-
 from ..models.todo_crud import TODOBase
 
 class TodoNotFoundError(Exception):
+    """
+    Exception raised when a TODO item is not found in the database.
+    """
     pass
 
 # get all TODO items
@@ -92,7 +93,7 @@ def full_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) -> TO
     try:
         db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
         if db_todo is None:
-            raise HTTPException(status_code=404, detail="Todo not found")
+            raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         update_data = todo_data.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_todo, key, value)
@@ -110,7 +111,7 @@ def partial_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) ->
     try:
         db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
         if db_todo is None:
-            raise HTTPException(status_code=404, detail="Todo not found")
+            raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         update_data = todo_data.dict(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_todo, key, value)
@@ -135,7 +136,7 @@ def delete_todo_data(todo_id: UUID, db: Session) -> None:
     try:
         db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
         if db_todo is None:
-            raise HTTPException(status_code=404, detail="Todo not found")
+            raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         db.delete(db_todo)
         db.commit()
     except SQLAlchemyError as e:
