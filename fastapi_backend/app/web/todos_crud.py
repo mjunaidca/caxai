@@ -9,7 +9,7 @@ from ..service.todos_crud import create_todo_service, get_todo_by_id_service, ge
 
 from ..data.sqlalchemy_models import TODO
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api", tags=["Todo Crud"])
 
 # Get ALL TODOS
 @router.get("/todos/", response_model=list[TODOResponse])
