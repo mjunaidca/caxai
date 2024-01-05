@@ -12,6 +12,8 @@ from ..data.sqlalchemy_models import TODO
 router = APIRouter(prefix="/api", tags=["Todo Crud"])
 
 # Get ALL TODOS
+
+
 @router.get("/todos/", response_model=list[TODOResponse])
 def get_todos(db: Session = Depends(get_db)):
     try:
@@ -21,14 +23,18 @@ def get_todos(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
 # Get a Single TODO item
+
+
 @router.get("/todos/{todo_id}", response_model=TODOResponse)
 def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db)):
     try:
         return get_todo_by_id_service(todo_id, db)
+    except HTTPException as e:
+        # If the service layer raised an HTTPException, re-raise it
+        raise e
     except Exception as e:
         # Handle specific exceptions with different HTTP status codes if needed
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
-
 
 
 # Create a new TODO item
@@ -41,6 +47,8 @@ def create_todo(todo: TODOBase, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
 # Update a Single TODO item Completly
+
+
 @router.put("/todos/{todo_id}", response_model=TODOResponse)
 def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db)):
     try:

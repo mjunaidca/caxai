@@ -7,7 +7,8 @@ from ..data.sqlalchemy_models import TODO
 
 from ..models.todo_crud import TODOBase
 
-
+class TodoNotFoundError(Exception):
+    pass
 
 # get all TODO items
 def get_all_todo_data(db: Session) -> list[TODO]:
@@ -43,15 +44,14 @@ def get_single_todo_data(todo_id: UUID, db: Session) -> TODO:
     try:
         db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
         if db_todo is None:
-            raise HTTPException(status_code=404, detail="Todo not found")
+            raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         return db_todo
     except SQLAlchemyError as e:
         # Log the exception for debugging purposes
         print(f"Error getting TODO item: {e}")
         # Re-raise the exception to be handled at a higher level
         raise
-
-
+    
 def create_todo_data(db_todo: TODO, db: Session) -> TODO:
     """
     Create a new TODO item in the database.
