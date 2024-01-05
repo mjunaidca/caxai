@@ -1,8 +1,7 @@
-from sqlalchemy.orm.exc import NoResultFound
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 from ..data.sqlalchemy_models import TODO
 from ..models.todo_crud import TODOBase
 from ..data.todos_crud import create_todo_data, get_single_todo_data, get_all_todo_data, full_update_todo_data, partial_update_todo_data, delete_todo_data, TodoNotFoundError
