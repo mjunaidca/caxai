@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv, find_dotenv
-from .sqlalchemy_models import Base
+from sqlalchemy.exc import SQLAlchemyError
 
 _: bool = load_dotenv(find_dotenv())
 
@@ -20,5 +20,10 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except SQLAlchemyError as e:
+        # Log the error for debugging purposes
+        print(f"Database error occurred: {e}")
+        # Depending on your application's needs, you might want to handle the error
+        # differently, such as rolling back the transaction or re-raising the error.
     finally:
         db.close()
