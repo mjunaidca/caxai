@@ -16,6 +16,40 @@ This is more like a project build for personal use and open sourced for others t
 
 - Whatsapp, Skype or Slack message/notifications about daily work
 
+## Run Migrations One Time Using Alembic
+
+Reason: It's recommended in SQLAlchemcy documentation to use alembic for db migrations in big projects.
+
+We are using Neon Serverless Postgress Database and SQL Alchemy ORM.
+
+Run Migratiosn: 
+
+1. `alembic init migrations`
+
+In alembic.ini rm the url here sqlalchemy.url = 
+
+In migrations/env.py import dotenv and then:
+
+config = context.config
+
+# ---------------- added code here -------------------------#
+# this will overwrite the ini-file sqlalchemy.url path
+# with the path given in the config of the main code
+config.set_main_option("sqlalchemy.url", os.environ.get("DB_URL"))
+
+Replace # target_metadata = None with 
+
+from app.data sqlalchemy_models
+target_metadata = sqlalchemy_models.Base.metadata
+
+Here I made fastapi_backend a module and then used an absolute import above.
+
+2. ` alembic revision --autogenerate -m "Add Todos Table`
+`alembic upgrade head`
+
+Helpful Reference:
+https://ahmed-nafies.medium.com/fastapi-with-sqlalchemy-postgresql-and-alembic-and-of-course-docker-f2b7411ee396
+
 ### Features To Add in the future
 
 #### Adaptive Task Prioritization:
