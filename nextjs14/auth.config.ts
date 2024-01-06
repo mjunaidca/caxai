@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { LoginSchema } from "@/schemas";
 
 export const authConfig = {
+
     providers: [
         Credentials({
           async authorize(credentials) {

@@ -1,19 +1,18 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
 
-// Custom types to handle the additional properties in your API response
-interface ExtendedUser {
-  id: string;
-  username: string;
-  email: string;
-  full_name: string;
-  email_verified: boolean;
-}
-
-interface ExtendedAccount {
+interface ExtendedUserResponse {
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    full_name: string;
+    email_verified: boolean;
+  };
   access_token: string;
   token_type: string;
 }
+
 
 export const {
   handlers: { GET, POST },
@@ -28,30 +27,38 @@ export const {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      const extendedUser = user as ExtendedUser;
-      const extendedAccount = account as ExtendedAccount;
-
-      if (extendedAccount && extendedUser) {
-        token.accessToken = extendedAccount.access_token;
-        token.id = extendedUser.id; // Already a string, no assertion needed
+      // Convert the user object to unknown first, then to ExtendedUserResponse
+      const extendedUserResponse = user as unknown as ExtendedUserResponse | null;
+    
+      if (extendedUserResponse?.user) {
+        const extendedUser = extendedUserResponse.user;
+        token.id = extendedUser.id;
         token.name = extendedUser.full_name;
         token.email = extendedUser.email;
-        token.emailVerified = extendedUser.email_verified; // Already a boolean, no assertion needed
+        token.emailVerified = extendedUser.email_verified;
       }
-
+    
+      if (extendedUserResponse?.access_token) {
+        token.accessToken = extendedUserResponse.access_token;
+      }
+    
       return token;
     },
+    
 
     async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        id: token.id as string, // Type assertion for string
-        name: token.name, // Assuming it's already a string
-        email: token.email, // Assuming it's already a string
-      };
+      if (token) {
+        session.user = {
+          id: token.id as unknown as string,
+          name: token.name,
+          email: token.email,
+          // @ts-ignore
+          emailVerified: token.emailVerified,
+          accessToken: token.accessToken, // Added access token to session
+        };
+      }
       return session;
     },
-    // signIn callback is not needed if you're directly handling it in authConfig
   },
 
   session: { strategy: "jwt" },
