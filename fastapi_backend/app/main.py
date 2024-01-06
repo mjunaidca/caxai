@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .web import todos_crud
+from .web import todos_crud, user_auth
 
 app = FastAPI(
     title="FastAPI Backend",
@@ -7,6 +7,7 @@ app = FastAPI(
     tags=["Main Route"]
 )
 
+app.include_router(user_auth.router)
 app.include_router(todos_crud.router)
 
 

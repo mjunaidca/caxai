@@ -6,3 +6,5 @@ python-dotenv
 SQLAlchemy
 psycopg2-binary
 alembic
+python-jose
+passlib

@@ -23,3 +23,4 @@ class TODOResponse(TODOBase):
     id: UUID
     created_at: datetime
     updated_at: datetime
+    user_id: UUID

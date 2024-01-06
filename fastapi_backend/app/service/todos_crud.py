@@ -73,7 +73,7 @@ def create_todo_service(todo_data: TODOBase, db: Session) -> TODO:
     """
     try:
         db_todo = TODO(title=todo_data.title,
-                   description=todo_data.description, completed=todo_data.completed)
+                   description=todo_data.description, completed=todo_data.completed, user_id="123e4567-e89b-12d3-a456-426614174000")
         return create_todo_data(db_todo, db)
     except SQLAlchemyError as e:
         print(f"Database error when creating TODO item: {e}")
