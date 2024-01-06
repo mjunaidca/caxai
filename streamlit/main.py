@@ -25,7 +25,7 @@ def import_json(path):
         return url
 
 
-data_oracle = import_json(r"robo_brain.json")
+data_oracle = import_json(r"./robo_brain.json")
 st_lottie(data_oracle, height=400, key="oracle")
 
 st.title("Cal AI")
