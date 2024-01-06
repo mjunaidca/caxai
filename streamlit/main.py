@@ -2,8 +2,15 @@ import streamlit as st
 import requests
 import json
 from streamlit_lottie import st_lottie
+import os
+from dotenv import load_dotenv, find_dotenv
 
-BASE_URL = "http://127.0.0.1:8000"
+_: bool = load_dotenv(find_dotenv())
+
+BASE_URL = os.environ.get("BASE_URL")
+
+if not BASE_URL:
+    raise ValueError("Contact Developer ~ Base URL not found")
 
 # Page Configuration
 st.set_page_config(
@@ -71,26 +78,28 @@ def user_signup():
 def user_login():
     with st.form("User Login"):
         username = st.text_input("Username", key="login_username")
-        password = st.text_input(
-            "Password", type="password", key="login_password")
+        password = st.text_input("Password", type="password", key="login_password")
         submit_button = st.form_submit_button("Login")
+
         if submit_button:
-            response = requests.post(
-                f"{BASE_URL}/api/auth/login",
-                data={"username": username, "password": password}
-            )
-            if response.status_code == 200:
-                st.session_state['access_token'] = response.json()[
-                    "access_token"]
-                st.success("Logged in successfully")
-                st.toast(f"Welcome {response.json()['user']['full_name']}")
-                st.rerun()
+            # Check if username or password is empty
+            if not username.strip() or not password.strip():
+                st.error("Username and password cannot be empty")
             else:
-                st.error("Login failed")
-                # Display the 'detail' field from the response
-                print('response.json()', response.json())
-                print('response.status_code', response.status_code)
-                st.toast(response.json()["detail"])
+                response = requests.post(
+                    f"{BASE_URL}/api/auth/login",
+                    data={"username": username, "password": password}
+                )
+                if response.status_code == 200:
+                    st.session_state['access_token'] = response.json()["access_token"]
+                    st.toast(f"Welcome {response.json()['user']['full_name']}")
+                    st.rerun()
+                else:
+                    st.error("Login failed")
+                    print('response.json()', response.json())
+                    print('response.status_code', response.status_code)
+                    st.toast(response.json()["detail"])
+
 
 
 def create_todo():
@@ -151,13 +160,14 @@ if st.session_state['access_token']:
                     # Interactive buttons for each todo
                     col1, col2, col3 = st.columns([1, 1, 1])
                     with col1:
-                        if st.button("Complete", key=f"complete_{todo['id']}"):
-                            # Logic to mark todo as complete
+                        if st.button("Update Status", key=f"complete_{todo['id']}"):
+                            # Logic to toggle the completion status of the todo
+                            new_status = not todo['completed']
                             patch_response = requests.patch(f"{BASE_URL}/api/todos/{todo['id']}",
-                                                            json={"title": todo['title'], "completed": True},
+                                                            json={"title": todo['title'], "completed": new_status},
                                                             headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
                             if patch_response.status_code == 200:
-                                st.toast("Todo marked as completed")
+                                st.toast("Updated todo status")
                             elif patch_response.status_code == 401:
                                 st.error("Unauthorized. Please log in again.")
                                 st.session_state['access_token'] = None
