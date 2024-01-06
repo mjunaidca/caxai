@@ -13,7 +13,7 @@ class User(BaseModel):
     username: str
     email: str | None = None
     full_name: str | None = None
-    disabled: bool | None = None
+    email_verified: bool | None = None
 
 class RegisterUser(User):
     password: str
