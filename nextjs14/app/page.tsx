@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LoginButton } from "@/components/auth/login-button";
+import { RegisterButton } from "@/components/auth/register-button";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -17,17 +18,22 @@ export default function Home() {
           "text-6xl font-semibold text-white drop-shadow-md",
           font.className,
         )}>
-          🔐 Auth
+          🔐 CAl AI
         </h1>
         <p className="text-white text-lg">
-          A simple authentication service
+          An End To End Multi User GenAI Project
         </p>
-        <div>
+        <div className="flex w-full justify-center space-x-2">
           <LoginButton  asChild>
             <Button variant="secondary" size="lg">
               Sign in
             </Button>
           </LoginButton>
+          <RegisterButton  asChild>
+            <Button variant="secondary" size="lg">
+              Sign up
+            </Button>
+          </RegisterButton>
         </div>
       </div>
     </main>
