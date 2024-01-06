@@ -1,5 +1,6 @@
-# Cal AI: An AI Powered Personal ToDo Web App
+# Cal AI: MultiUser AI Powered Personal ToDo Web App
 
+### An End to End Cloud GenAI MultiUser Project.
 A simple Gen AI Powered AI First Microsrvice and Frontend Showcasing the Architecture for API forst Modern Web.
 
 + Layered Architecture Development
@@ -7,8 +8,14 @@ A simple Gen AI Powered AI First Microsrvice and Frontend Showcasing the Archite
 + Serverless Posgtgress Database Powered with SQL ALCHEMY ORM
 + Pytests for Unit Tests, API Tests and End to End Tests
 
-### An End to End Cloud GenAI Project.
+Deployments:
+- FastAPI Backend is dockerized and deplyed on Google Run
+    - User Signup And Login Auhtication using OAuth Protocol
+    - Authenticatied TODOs Crud
+- Streamlit F.E is deployed on streamlit
+- NextJS14 F.E is deployed on Vercel
 
+#### The Inspiration
 Starting from a simple todo app here I will be adding all features I wanted in any task mangement web app I have tried. 
 
 This is more like a project build for personal use and open sourced for others to learn and maybe try using it.
