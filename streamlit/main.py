@@ -36,7 +36,6 @@ def user_signup():
                     st.error("Signup failed")
                     st.toast(response.json()["detail"])
 
-
 def user_login():
     with st.form("User Login"):
         username = st.text_input("Username", key="login_username")
@@ -51,24 +50,32 @@ def user_login():
                 st.session_state['access_token'] = response.json()["access_token"]
                 st.success("Logged in successfully")
                 st.toast(f"Welcome {response.json()['user']['full_name']}")
+                st.rerun()
             else:
                 st.error("Login failed")
+                # Display the 'detail' field from the response
+                print('response.json()', response.json())
+                print('response.status_code', response.status_code)
                 st.toast(response.json()["detail"])
-            st.rerun()
 
 def create_todo():
     with st.form("Create Todo"):
         title = st.text_input("Enter Todo Title")
         description = st.text_area("Enter Todo Description")
         submit_button = st.form_submit_button("Add Todo")
-        if submit_button and st.session_state['access_token']:
+        if submit_button and 'access_token' in st.session_state:
             response = requests.post(
                 f"{BASE_URL}/api/todos/",
                 json={"title": title, "description": description},
                 headers={"Authorization": f"Bearer {st.session_state['access_token']}"}
             )
             if response.status_code == 200:
-                st.success("Todo added successfully")
+                st.toast("Todo added successfully")
+                # Clear the output after success
+                st.empty()
+            elif response.status_code == 401:
+                st.error("Unauthorized. Please log in again.")
+                st.session_state['access_token'] = None  # Reset access token
             else:
                 st.error("Failed to add todo")
             st.rerun()
@@ -77,11 +84,14 @@ def delete_todo():
     with st.form("Delete Todo"):
         todo_id = st.text_input("Enter Todo ID to delete")
         submit_button = st.form_submit_button("Delete Todo")
-        if submit_button and st.session_state['access_token']:
+        if submit_button and 'access_token' in st.session_state:
             response = requests.delete(f"{BASE_URL}/api/todos/{todo_id}",
                 headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
             if response.status_code == 200:
                 st.success("Todo deleted successfully")
+            elif response.status_code == 401:
+                st.error("Unauthorized. Please log in again.")
+                st.session_state['access_token'] = None  # Reset access token
             else:
                 st.error("Failed to delete todo")
             st.rerun()
