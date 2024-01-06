@@ -9,12 +9,12 @@ from ..service.todos_crud import create_todo_service, get_todo_by_id_service, ge
 
 from ..data.sqlalchemy_models import TODO
 
-router = APIRouter(prefix="/api", tags=["Todo Crud"])
+router = APIRouter(prefix="/api/todos", tags=["Todo Crud"])
 
 # Get ALL TODOS
 
 
-@router.get("/todos/", response_model=list[TODOResponse])
+@router.get("/", response_model=list[TODOResponse])
 def get_todos(db: Session = Depends(get_db)):
     try:
         return get_all_todos_service(db)
@@ -25,7 +25,7 @@ def get_todos(db: Session = Depends(get_db)):
 # Get a Single TODO item
 
 
-@router.get("/todos/{todo_id}", response_model=TODOResponse)
+@router.get("/{todo_id}", response_model=TODOResponse)
 def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db)):
     try:
         return get_todo_by_id_service(todo_id, db)
@@ -38,7 +38,7 @@ def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db)):
 
 
 # Create a new TODO item
-@router.post("/todos/", response_model=TODOResponse)
+@router.post("/", response_model=TODOResponse)
 def create_todo(todo: TODOBase, db: Session = Depends(get_db)):
     try:
         return create_todo_service(todo, db)
@@ -49,7 +49,7 @@ def create_todo(todo: TODOBase, db: Session = Depends(get_db)):
 # Update a Single TODO item Completly
 
 
-@router.put("/todos/{todo_id}", response_model=TODOResponse)
+@router.put("/{todo_id}", response_model=TODOResponse)
 def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db)):
     try:
         return full_update_todo_service(todo_id, updated_todo, db)
@@ -59,7 +59,7 @@ def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get
 
 
 # Update a Single TODO item partially
-@router.patch("/todos/{todo_id}", response_model=TODOResponse)
+@router.patch("/{todo_id}", response_model=TODOResponse)
 def update_todo_partial(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db)):
     try:
         return partial_update_todo_service(todo_id, updated_todo, db)
@@ -69,7 +69,7 @@ def update_todo_partial(todo_id: UUID, updated_todo: TODOBase, db: Session = Dep
 
 
 # DELETE a single TODO item
-@router.delete("/todos/{todo_id}")
+@router.delete("/{todo_id}")
 def delete_todo(todo_id: UUID, db: Session = Depends(get_db)):
     try:
         return delete_todo_data(todo_id, db)
