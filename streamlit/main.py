@@ -86,10 +86,7 @@ def user_login():
             if not username.strip() or not password.strip():
                 st.error("Username and password cannot be empty")
             else:
-                response = requests.post(
-                    f"{BASE_URL}/api/auth/login",
-                    data={"username": username, "password": password}
-                )
+                response = requests.post(f"{BASE_URL}/api/auth/login", data={"username": username, "password": password})
                 if response.status_code == 200:
                     st.session_state['access_token'] = response.json()["access_token"]
                     st.toast(f"Welcome {response.json()['user']['full_name']}")
@@ -163,9 +160,7 @@ if st.session_state['access_token']:
                         if st.button("Update Status", key=f"complete_{todo['id']}"):
                             # Logic to toggle the completion status of the todo
                             new_status = not todo['completed']
-                            patch_response = requests.patch(f"{BASE_URL}/api/todos/{todo['id']}",
-                                                            json={"title": todo['title'], "completed": new_status},
-                                                            headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
+                            patch_response = requests.patch(f"{BASE_URL}/api/todos/{todo['id']}", json={"title": todo['title'], "completed": new_status}, headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
                             if patch_response.status_code == 200:
                                 st.toast("Updated todo status")
                             elif patch_response.status_code == 401:
@@ -177,8 +172,7 @@ if st.session_state['access_token']:
 
                     with col2:
                         if st.button("Delete", key=f"delete_{todo['id']}") and 'access_token' in st.session_state:
-                            response = requests.delete(f"{BASE_URL}/api/todos/{todo['id']}",
-                                                    headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
+                            response = requests.delete(f"{BASE_URL}/api/todos/{todo['id']}", headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
                             if response.status_code == 200:
                                 st.toast("Todo deleted successfully")
                             elif response.status_code == 401:
@@ -207,9 +201,7 @@ if st.session_state['access_token']:
                         cancel_button = st.form_submit_button("Cancel")
 
                     if submit_button:
-                        update_response = requests.put(f"{BASE_URL}/api/todos/{st.session_state.edit_todo_id}",
-                                                    json={"title": new_title, "description": new_description},
-                                                    headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
+                        update_response = requests.put(f"{BASE_URL}/api/todos/{st.session_state.edit_todo_id}", json={"title": new_title, "description": new_description}, headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
                         if update_response.status_code == 200:
                             st.toast("Todo updated successfully")
                             st.session_state.edit_todo_id = None  # Reset edit mode
