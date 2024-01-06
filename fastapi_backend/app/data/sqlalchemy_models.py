@@ -1,5 +1,5 @@
-from sqlalchemy.orm import mapped_column, DeclarativeBase, Mapped
-from sqlalchemy import String, Boolean, UUID, DateTime, Text, func
+from sqlalchemy.orm import mapped_column, DeclarativeBase, Mapped, relationship
+from sqlalchemy import String, Boolean, UUID, DateTime, Text, func, ForeignKey
 
 import datetime
 import uuid
@@ -7,17 +7,35 @@ class Base(DeclarativeBase):
     pass
 
 class TODO(Base):
-    
     """
     Represents a TODO in the database.
     """
-
-    __tablename__ = "todos"
+    __tablename__ = "todos_table"
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True, index=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String, index=True)
-    description: Mapped[str] = mapped_column(Text, index=True, nullable=True)  # Made description optional
+    description: Mapped[str] = mapped_column(Text, nullable=True)  # Made description optional
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), index=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now())
     updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now(), index=True)
 
+    # Foreign key to reference the user
+    user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey("users_table.id", ondelete='CASCADE'), nullable=False)
+    user: Mapped["USER"] = relationship("USER", back_populates="todos")
 
+class USER(Base):
+    """
+    Represents a User in the database.
+    """
+    __tablename__ = "users_table"
+
+    id: Mapped[UUID] = mapped_column(UUID, primary_key=True, index=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column(String, unique=True, index=True)
+    full_name: Mapped[str] = mapped_column(String)
+    hashed_password: Mapped[str] = mapped_column(String, index=True)
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now())
+    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now(), index=True)
+
+    # Relationship to reference the todos
+    todos = relationship("TODO", back_populates="user")

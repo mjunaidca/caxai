@@ -87,8 +87,9 @@ target_metadata = sqlalchemy_models.Base.metadata
 
 Here I made fastapi_backend a module and then used an absolute import above.
 
-2. ` alembic revision --autogenerate -m "Add Todos Table`
-`alembic upgrade head`
+2. `alembic revision --autogenerate -m "Add Todos Table`
+
+3. `alembic upgrade head`
 
 Helpful Reference:
 https://ahmed-nafies.medium.com/fastapi-with-sqlalchemy-postgresql-and-alembic-and-of-course-docker-f2b7411ee396
