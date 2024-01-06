@@ -8,3 +8,4 @@ psycopg2-binary
 alembic
 python-jose
 passlib
+python-multipart

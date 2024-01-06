@@ -34,6 +34,12 @@ if 'edit_todo_id' not in st.session_state:
     st.session_state.edit_todo_title = ''
     st.session_state.edit_todo_description = ''
 
+def signout():
+    st.session_state['access_token'] = None
+    st.rerun()
+
+
+
 def user_signup():
     with st.form("User Signup"):
         fullname = st.text_input("Fullname", key="signup_fullname")
@@ -124,6 +130,10 @@ if not st.session_state['access_token']:
 if st.session_state['access_token']:
     create_todo()
 
+    # Display the signout button when the user is logged in
+    if st.button('Sign Out'):
+        signout()
+
     # Show all todos
     response = requests.get(f"{BASE_URL}/api/todos/",
                             headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
@@ -131,7 +141,7 @@ if st.session_state['access_token']:
         todos = response.json()
 
         if todos:
-            st.subheader("What's on your Work List?")
+            st.subheader("Your Work List :D")
             for todo in todos:
                 with st.expander(f"**Task Name: {todo['title']}** (Created: {todo['created_at'][:10]})"):
                     st.markdown(f"**Description:** {todo['description']}")

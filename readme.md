@@ -19,6 +19,8 @@ This is more like a project build for personal use and open sourced for others t
 
 #### Streamlit Protype
 
+#### Implementes Authentication and Todos Crud Prototype
+
 #### In progress Features
 
 - A Notion like Weekly to do list where I can add each week todos
@@ -101,3 +103,5 @@ Here I made fastapi_backend a module and then used an absolute import above.
 
 Helpful Reference:
 https://ahmed-nafies.medium.com/fastapi-with-sqlalchemy-postgresql-and-alembic-and-of-course-docker-f2b7411ee396
+
+## Docker Commands
