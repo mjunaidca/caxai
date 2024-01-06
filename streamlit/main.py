@@ -1,7 +1,5 @@
 import streamlit as st
 import requests
-import json
-from streamlit_lottie import st_lottie
 import os
 from dotenv import load_dotenv, find_dotenv
 
@@ -17,16 +15,6 @@ st.set_page_config(
     page_title="Cal AI",
     page_icon="🤖"
 )
-
-# Import Downloaded JSON
-def import_json(path):
-    with open(path, "r", encoding="utf8", errors="ignore") as file:
-        url = json.load(file)
-        return url
-
-
-data_oracle = import_json(r"./robo_brain.json")
-st_lottie(data_oracle, height=400, key="oracle")
 
 st.title("Cal AI")
 
