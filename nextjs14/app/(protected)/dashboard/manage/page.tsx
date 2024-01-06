@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { InvoicesTableSkeleton } from "@/components/ui/skeletons";
 import TodosTable from "@/components/manage/todos-table";
 import { fetchAllTodos } from "@/actions/fetch_todos";
+import { CreateTodo } from "@/components/manage/buttons";
 
 export const metadata: Metadata = {
   title: "Manage",
@@ -19,7 +20,7 @@ export default async function Page() {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={` text-2xl`}>Todos Manager</h1>
+        <h1 className={` text-2xl`}>Todos Manager</h1> <CreateTodo /> 
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         {/* <Search placeholder="Search invoices..." />

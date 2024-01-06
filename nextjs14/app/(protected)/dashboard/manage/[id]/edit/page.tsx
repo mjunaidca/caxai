@@ -16,6 +16,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const todoResponse = await fetchTodoById(id);
 
+  console.log("Todo Response:", todoResponse);
+  
+
   if (!todoResponse || "error" in todoResponse) {
     notFound();
   }

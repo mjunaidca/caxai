@@ -13,7 +13,7 @@ export async function deleteTodo(id: string) {
 
     // Get All Todos
     try {
-        const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}`, {
+        const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 },
@@ -21,6 +21,9 @@ export async function deleteTodo(id: string) {
             cache: 'no-store',
             next: { tags: ['get_todos'] }
         });
+
+        console.log('DELETE_TODO_STATUS', all_todos_request.status, all_todos_request.statusText);
+        
 
         if (all_todos_request.status === 200) {
             revalidateTag('get_todos')
