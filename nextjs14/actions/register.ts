@@ -16,28 +16,31 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid fields!" };
   }
 
-  const { email, password, name } = validatedFields.data;
-//   const hashedPassword = await bcrypt.hash(password, 10);
+  const { email, password, fullname, username } = validatedFields.data;
 
-//   const existingUser = await getUserByEmail(email);
+  // Send Data in JSON Format
 
-//   if (existingUser) {
-//     return { error: "Email already in use!" };
-//   }
+  const signup_request = await fetch(`${process.env.BACKEND_URL}/api/auth/users/signup/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "username": username,
+      "email": email,
+      "full_name": fullname,
+      "password": password
+    }),
+    cache: "no-store",
+  });
 
-//   await db.user.create({
-//     data: {
-//       name,
-//       email,
-//       password: hashedPassword,
-//     },
-//   });
+  console.log('signup_request', signup_request.status, signup_request.statusText);
+  
 
-//   const verificationToken = await generateVerificationToken(email);
-//   await sendVerificationEmail(
-//     verificationToken.email,
-//     verificationToken.token,
-//   );
+  if (signup_request.status !== 200) {
+    const error = await signup_request.json();
+    return { error: error.detail };
+  }
 
-  return { success: "Confirmation email sent!" };
+  return { success: "Signup Success - Please Login!" };
 };

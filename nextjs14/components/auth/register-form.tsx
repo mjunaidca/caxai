@@ -20,11 +20,13 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
+import { useToast } from "@/components/ui/use-toast"
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -44,6 +46,19 @@ export const RegisterForm = () => {
       register(values).then((data) => {
         setError(data.error);
         setSuccess(data.success);
+        if (data?.error) {
+          form.reset();
+          toast({
+            title: "Signup Failed",
+            description: data?.error,
+          })
+        }
+        if (data?.success) {
+          toast({
+            title: "Signup Success",
+            description: "Please Login To Continue",
+          })
+        }
       });
     });
   };
