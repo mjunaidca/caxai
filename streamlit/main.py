@@ -19,8 +19,6 @@ st.set_page_config(
 )
 
 # Import Downloaded JSON
-
-
 def import_json(path):
     with open(path, "r", encoding="utf8", errors="ignore") as file:
         url = json.load(file)
@@ -105,12 +103,7 @@ def create_todo():
         description = st.text_area("Enter Todo Description")
         submit_button = st.form_submit_button("Add Todo")
         if submit_button and 'access_token' in st.session_state:
-            response = requests.post(
-                f"{BASE_URL}/api/todos/",
-                json={"title": title, "description": description},
-                headers={"Authorization": f"Bearer {
-                    st.session_state['access_token']}"}
-            )
+            response = requests.post(f"{BASE_URL}/api/todos/", json={"title": title, "description": description}, headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
             if response.status_code == 200:
                 st.toast("Todo added successfully")
                 # Clear the output after success
@@ -141,8 +134,7 @@ if st.session_state['access_token']:
         signout()
 
     # Show all todos
-    response = requests.get(f"{BASE_URL}/api/todos/",
-                            headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
+    response = requests.get(f"{BASE_URL}/api/todos/", headers={"Authorization": f"Bearer {st.session_state['access_token']}"})
     if response.status_code == 200:
         todos = response.json()
 
