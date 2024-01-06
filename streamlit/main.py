@@ -1,9 +1,24 @@
-# streamlit_client.py
-
 import streamlit as st
 import requests
+import json
+from streamlit_lottie import st_lottie
 
 BASE_URL = "http://127.0.0.1:8000"
+
+# Page Configuration 
+st.set_page_config(
+    page_title= "Cal AI",
+    page_icon= "🤖"
+)
+
+# Import Downloaded JSON
+def import_json(path):
+    with open(path, "r", encoding="utf8", errors="ignore") as file:
+        url = json.load(file)
+        return url
+    
+data_oracle = import_json(r"robo_brain.json")
+st_lottie(data_oracle, height = 400, key = "oracle")
 
 # Initialize session state
 if 'access_token' not in st.session_state:

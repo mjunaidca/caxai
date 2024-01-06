@@ -13,6 +13,14 @@ Starting from a simple todo app here I will be adding all features I wanted in a
 
 This is more like a project build for personal use and open sourced for others to learn and maybe try using it.
 
+#### Endpoints
+
+![FastAPI EndPoints](./public/routes.png)
+
+#### Streamlit Protype
+
+#### In progress Features
+
 - A Notion like Weekly to do list where I can add each week todos
     - At week end the sheet is deleted while the todos are saved in database.
     - AI can talk or inform in text about my daily tasks
