@@ -12,7 +12,7 @@ class TodoNotFoundError(Exception):
     pass
 
 # get all TODO items
-def get_all_todo_data(db: Session) -> list[TODO]:
+def get_all_todo_data(db: Session, user_id: UUID) -> list[TODO]:
     """
     Get all TODO items from the database.
 
@@ -23,7 +23,7 @@ def get_all_todo_data(db: Session) -> list[TODO]:
         list[TODO]: The list of TODO items.
     """
     try:
-        return db.query(TODO).all()
+        return db.query(TODO).filter(TODO.user_id == user_id).all()
     except SQLAlchemyError as e:
         # Log the exception for debugging purposes
         print(f"Error getting all TODO items: {e}")
@@ -31,7 +31,7 @@ def get_all_todo_data(db: Session) -> list[TODO]:
         raise
 
 # get a single TODO item
-def get_single_todo_data(todo_id: UUID, db: Session) -> TODO:
+def get_single_todo_data(todo_id: UUID, db: Session, user_id: UUID) -> TODO:
     """
     Get a single TODO item from the database.
 
@@ -43,7 +43,7 @@ def get_single_todo_data(todo_id: UUID, db: Session) -> TODO:
         TODO: The retrieved TODO item.
     """
     try:
-        db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
+        db_todo = db.query(TODO).filter(TODO.id == todo_id, TODO.user_id == user_id).first()
         if db_todo is None:
             raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         return db_todo
@@ -78,7 +78,7 @@ def create_todo_data(db_todo: TODO, db: Session) -> TODO:
         raise
 
 
-def full_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) -> TODO:
+def full_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
     """
     Update an existing TODO item in the database.
 
@@ -91,7 +91,7 @@ def full_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) -> TO
         TODO: The updated TODO item.
     """
     try:
-        db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
+        db_todo = db.query(TODO).filter(TODO.id == todo_id, TODO.user_id == user_id).first()
         if db_todo is None:
             raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         update_data = todo_data.model_dump(exclude_unset=True)
@@ -107,12 +107,12 @@ def full_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) -> TO
         # Re-raise the exception to be handled at a higher level
         raise
 
-def partial_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) -> TODO:
+def partial_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
     try:
-        db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
+        db_todo = db.query(TODO).filter(TODO.id == todo_id, TODO.user_id == user_id).first()
         if db_todo is None:
             raise TodoNotFoundError(f"Todo with id {todo_id} not found")
-        update_data = todo_data.dict(exclude_unset=True)
+        update_data = todo_data.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_todo, key, value)
         db.commit()
@@ -125,7 +125,7 @@ def partial_update_todo_data(todo_id: UUID, todo_data: TODOBase, db: Session) ->
         # Re-raise the exception to be handled at a higher level
         raise
 
-def delete_todo_data(todo_id: UUID, db: Session) -> None:
+def delete_todo_data(todo_id: UUID, db: Session, user_id: UUID) -> None:
     """
     Delete an existing TODO item from the database.
 
@@ -134,7 +134,7 @@ def delete_todo_data(todo_id: UUID, db: Session) -> None:
         db (Session): The database session.
     """
     try:
-        db_todo = db.query(TODO).filter(TODO.id == todo_id).first()
+        db_todo = db.query(TODO).filter(TODO.id == todo_id, TODO.user_id == user_id).first()
         if db_todo is None:
             raise TodoNotFoundError(f"Todo with id {todo_id} not found")
         db.delete(db_todo)

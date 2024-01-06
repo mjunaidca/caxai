@@ -9,12 +9,12 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from ..models.user_auth import TokenData, RegisterUser
 from ..data.db_config import get_db
 from ..utils.helpers import verify_password
+from ..data.user_auth import get_user, db_signup_users, InvalidUserException
 
 from jose import JWTError, jwt
 
 from uuid import UUID
 
-from ..data.user_auth import get_user, db_signup_users
 
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -111,4 +111,11 @@ async def service_login_for_access_token(
 async def service_signup_users(
     user_data: RegisterUser, db: Session = Depends(get_db)
 ):
-    return await db_signup_users(user_data, db)
+    try:
+        return await db_signup_users(user_data, db)
+    except InvalidUserException as e:
+        # Catch the InvalidUserException and raise an HTTPException
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except Exception as e:
+        # Handle other unforeseen exceptions
+        raise HTTPException(status_code=500, detail=str(e))
