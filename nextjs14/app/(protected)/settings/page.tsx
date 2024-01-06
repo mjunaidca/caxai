@@ -6,7 +6,6 @@ const page = () => {
     <div>
       <LogoutButton>
         <Button>Logout</Button> 
-
         </LogoutButton>
     </div>
   );

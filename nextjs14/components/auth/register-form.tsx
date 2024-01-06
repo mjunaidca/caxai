@@ -51,6 +51,7 @@ export const RegisterForm = () => {
           toast({
             title: "Signup Failed",
             description: data?.error,
+            variant: "destructive",
           })
         }
         if (data?.success) {
