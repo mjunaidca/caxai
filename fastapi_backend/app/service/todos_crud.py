@@ -45,7 +45,7 @@ def get_todo_by_id_service(todo_id: UUID, db: Session, user_id: UUID) -> TODO:
         print(f"Error getting TODO item: {e}")
         # Re-raise the exception to be handled at the endpoint level
         raise HTTPException(status_code=500, detail="Internal server error")
-    
+
 
 def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
     # try:
@@ -72,7 +72,7 @@ def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO
     """
     try:
         db_todo = TODO(title=todo_data.title,
-                   description=todo_data.description, completed=todo_data.completed, user_id=user_id)
+                       description=todo_data.description, completed=todo_data.completed, user_id=user_id)
         return create_todo_data(db_todo, db)
     except SQLAlchemyError as e:
         print(f"Database error when creating TODO item: {e}")
@@ -90,7 +90,6 @@ def full_update_todo_service(todo_id: UUID, todo_data: TODOBase, db: Session, us
     #     print(f"Error updating TODO item: {e}")
     #     # Re-raise the exception to be handled at the endpoint level
     #     raise
-
     """
     Update an existing TODO item.
 
@@ -115,6 +114,7 @@ def full_update_todo_service(todo_id: UUID, todo_data: TODOBase, db: Session, us
     except Exception as e:
         print(f"Error updating TODO item: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
 
 def partial_update_todo_service(todo_id: UUID, todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
     """

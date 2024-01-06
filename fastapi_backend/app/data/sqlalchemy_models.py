@@ -21,9 +21,9 @@ class TODO(Base):
         Text, nullable=True)  # Made description optional
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=func.now())
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=func.now(), onupdate=func.now(), index=True)
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc), onupdate=lambda: datetime.datetime.now(datetime.timezone.utc))
 
     # Foreign key to reference the user
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey(
@@ -46,9 +46,9 @@ class USER(Base):
     disabled: Mapped[bool] = mapped_column(Boolean, default=False)
 
     created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=func.now())
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=func.now(), onupdate=func.now(), index=True)
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc), onupdate=lambda: datetime.datetime.now(datetime.timezone.utc))
 
     # Relationship to reference the todos
     todos = relationship("TODO", back_populates="user")

@@ -1,19 +1,59 @@
-from fastapi.testclient import TestClient
-from ...main import app
+
+import requests
+import pytest
+
+# A pytest fixture to get bearer
 
 
-client = TestClient(app)
-
-
-# test to get all todos
-def test_read_all_todos():
-    response = client.get("api/todos/")
+@pytest.fixture
+def bearer():
+    login_data = {
+        "username": "mjs",
+        "password": "mjs"
+    }
+    response = requests.post(
+        "http://localhost:8000/api/auth/login",
+        data=login_data  # Send as form data
+    )
     assert response.status_code == 200
+    return response.json()["access_token"]
 
 
-def test_create_todo():
-    response = client.post(
-        "/api/todos/",
+# a get test with invalid bearer token
+def test_get_todos_with_invalid_token():
+    response = requests.get(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": "Bearer <YOUR_GithubPersonalAccessToken_HERE>"}
+    )
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid authentication credentials"}
+
+# a get test without bearer token
+
+
+def test_get_todos_without_token():
+    response = requests.get(
+        "http://localhost:8000/api/todos/",
+    )
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}
+
+#  test with valid bearer token that comes from fixture
+
+
+def test_get_todos_with_valid_token(bearer):
+    response = requests.get(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": f"Bearer {bearer}"}
+    )
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+
+def test_create_todo(bearer):
+    response = requests.post(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": f"Bearer {bearer}"},
         json={
             "title": "Test TODO",
             "description": "Test TODO Description",
@@ -21,16 +61,22 @@ def test_create_todo():
         }
     )
     assert response.status_code == 200
-    data = response.json()
-    assert data["title"] == "Test TODO"
-    assert data["description"] == "Test TODO Description"
-    assert data["completed"] == False
+    assert response.json()["title"] == "Test TODO"
+    assert response.json()["description"] == "Test TODO Description"
+    assert response.json()["completed"] == False
+
+    todo_id = response.json()["id"]
+
+    # Cleanup
+    requests.delete(
+        f"http://localhost:8000/api/todos/{todo_id}", headers={"Authorization": f"Bearer {bearer}"})
 
 
-def test_get_todo_by_id():
+def test_get_todo_by_id(bearer):
     # Create a todo
-    response = client.post(
-        "api/todos/",
+    response = requests.post(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": f"Bearer {bearer}"},
         json={
             "title": "Test TODO",
             "description": "Test TODO Description",
@@ -40,7 +86,8 @@ def test_get_todo_by_id():
     todo_id = response.json()["id"]
 
     # Get the todo by its ID
-    response = client.get(f"api/todos/{todo_id}")
+    response = requests.get(f"http://localhost:8000/api/todos/{todo_id}",
+                            headers={"Authorization": f"Bearer {bearer}"})
     assert response.status_code == 200
     assert response.json()["id"] == todo_id
     assert response.json()["title"] == "Test TODO"
@@ -48,13 +95,15 @@ def test_get_todo_by_id():
     assert response.json()["completed"] == False
 
     # Cleanup
-    client.delete(f"api/todos/{todo_id}")
+    requests.delete(
+        f"http://localhost:8000/api/todos/{todo_id}", headers={"Authorization": f"Bearer {bearer}"})
 
 
-def test_update_todo():
+def test_update_todo(bearer):
     # Create a todo
-    response = client.post(
-        "api/todos/",
+    response = requests.post(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": f"Bearer {bearer}"},
         json={
             "title": "Test TODO",
             "description": "Test TODO Description",
@@ -64,8 +113,9 @@ def test_update_todo():
     todo_id = response.json()["id"]
 
     # Update the todo
-    response = client.put(
-        f"api/todos/{todo_id}",
+    response = requests.put(
+        f"http://localhost:8000/api/todos/{todo_id}",
+        headers={"Authorization": f"Bearer {bearer}"},
         json={
             "title": "Updated TODO",
             "description": "Updated TODO Description",
@@ -79,4 +129,29 @@ def test_update_todo():
     assert response.json()["completed"] == True
 
     # Cleanup
-    client.delete(f"api/todos/{todo_id}")
+    requests.delete(f"http://localhost:8000/api/todos/{todo_id}",
+        headers={"Authorization": f"Bearer {bearer}"})
+
+
+def test_delete_todo(bearer):
+    # Create a todo
+    response = requests.post(
+        "http://localhost:8000/api/todos/",
+        headers={"Authorization": f"Bearer {bearer}"},
+        json={
+            "title": "Test TODO",
+            "description": "Test TODO Description",
+            "completed": False
+        }
+    )
+    todo_id = response.json()["id"]
+
+    # Delete the todo
+    response = requests.delete(f"http://localhost:8000/api/todos/{todo_id}",
+        headers={"Authorization": f"Bearer {bearer}"})
+    assert response.status_code == 200
+
+    # Try to get the deleted todo
+    response = requests.get(f"http://localhost:8000/api/todos/{todo_id}",
+        headers={"Authorization": f"Bearer {bearer}"})
+    assert response.status_code == 404
