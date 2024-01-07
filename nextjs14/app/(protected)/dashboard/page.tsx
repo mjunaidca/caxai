@@ -21,7 +21,7 @@ const page = () => {
               Manage ToDos
             </Button>
             </Link>
-            <Link href="/dashboard/create">
+            <Link href="/dashboard/view">
             <Button variant="secondary" size="lg">
               View All ToDos
             </Button>

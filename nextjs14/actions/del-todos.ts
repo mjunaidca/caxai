@@ -13,7 +13,7 @@ export async function deleteTodo(id: string) {
 
     // Get All Todos
     try {
-        const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}/`, {
+        const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 },
