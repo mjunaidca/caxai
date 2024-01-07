@@ -20,6 +20,8 @@ Starting from a simple todo app here I will be adding all features I wanted in a
 
 This is more like a project build for personal use and open sourced for others to learn and maybe try using it.
 
+*** Note: The Project is UnderProgress.
+
 #### Endpoints
 
 ![FastAPI EndPoints](./public/routes.png)
