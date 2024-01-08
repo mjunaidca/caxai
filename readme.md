@@ -1,17 +1,35 @@
 # Cal AI: MultiUser AI Powered Personal ToDo Web App
 
-## Project Structure
+## Understanding Repo Structure
 
 The project is developed and deployed under different cloud architectures. Each follows a modular and organized structure to ensure maintainability and scalability. Here is an overview of the main directories:
 
-- `nextjs_app_fastapi`: A Complete API Microservice and Web App deployed on VERCEL. Active development to add Applied GenAI features is continued for it :D
-    - Visit it's readme for all development, getting started, features and deployment details
+#### 1. `nextjs_app_fastapi`: 
 
-- `fastapi_cloud_msa`: 
+A Complete API Microservice and Web App deployed on VERCEL. Active development to add Applied GenAI features is continued for it :D
+
+    - Checkout it's readme for all development, getting started, features and deployment details
+
+##### NextJS User Dashboard
+
+![NextJS User Dashboard](./public/nextjs.png)
+
+#### NextJS FastAPI Endpoints
+
+![FastAPI EndPoints](./public/endpoints.png)
+
+
+#### 2. `fastapi_cloud_msa`: 
+
     - Contains the FastAPI backend code, including API routes, models, and database configurations.
     - Containorized using Docker and Deployed on Google Run
-- `nextjs_msa_fe`: Frontend developed for the `fastapi_cloud_msa` backend and deplyed on Vercel
-- `streamlit_mjs_prototype`: Frontend prototype developed in streamlit and deployed on streamlit cloud.
+
+### 3. `nextjs_msa_fe`: 
+Frontend developed for the `fastapi_cloud_msa` backend and deplyed on Vercel
+
+### 4. `streamlit_mjs_prototype`: 
+
+Frontend prototype developed in streamlit and deployed on streamlit cloud.
 
 The project structure is designed to promote code organization, separation of concerns, and ease of collaboration among team members.
 
