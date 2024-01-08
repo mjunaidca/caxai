@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CalX: Applied GenAI Multi User Todo App
 
-## Getting Started
+#### Built in NextJS14 Fastapi and deployed on Vercel
 
-First, run the development server:
+#### GenAI features are In Progress!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features And Tech Stack
+
+### FastAPI Microservice
+- User registration and authentication
+- CRUD operations for todos
+- Efficently handle Database Connections (open & close sessions for users)
+- OAuth protocol to implement authentication and security
+- Configured Alembic to generate database schema and run migrations
+- SqlAlchemy ORM and Neon Serverless Postgress SQL Database 
+- Complete Unit, End to End and Integration tests using pytest and uttitest
+
+### NextJS14
+- Be Dynamic at the Speed of Static
+- Use Server Actions for all User Actions
+- Middleware and NextAuth5 to implement user Authentication & Secure Routes
+- Streaming and Suspense to enchance UI
+- A custom todos management dashboard for all users
+- Shad CN Ui and Tailwind Css for UI engineering
+
+## Running the Project Locally 
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+1. Clone the repository:
+```sh
+git clone ....
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Rename .env.example to .env and add misisng environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run pnpm install to install the missing dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+4. Run Database Migrations
 
-## Learn More
+- `alembic revision --autogenerate -m "Add Todos Table`
 
-To learn more about Next.js, take a look at the following resources:
+- `alembic upgrade head`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. run pnpm dev and get the project running locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Vercel Deplyment
 
-## Deploy on Vercel
+Delete the .next and __pucache__ and .mypy... cache files and follow the steps:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+a. Run `vercel link` and then add all env variables to vercel deplyment. Replace the localhost vars with vercel deoloyment link
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+b. Finally run `vercel --prod` to deploy the project.
+
+
+## Future Development Roadmap
+
+Here’s what we envision for future updates:
+
+- Advanced AI Features
+- Intelligent Task Prioritization: 
+- Context-Aware Task Suggestions: 
+- Seamless Integration with External Tools
+- Smart Calendar Sync
+
+
+## The Inspiration
+Inspired by the need for a personalized, AI-driven task management tool, this project is a journey towards creating an app that not only assists in managing daily tasks but also learns and adapts to the user's lifestyle and preferences.
+
+## Thoughts
+
+Feel free to ask any questions or provide feedback. Contributions are also welcome!
