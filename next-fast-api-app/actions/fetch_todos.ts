@@ -8,7 +8,7 @@ export async function fetchAllTodos() {
     const accessToken = (session.user.accessToken)
 
     // Get All Todos
-    const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/`, {
+    const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },
@@ -19,6 +19,9 @@ export async function fetchAllTodos() {
     if (!all_todos_request.ok) {
         return 'Failes to Load Todos'
     }
+
+    console.log(all_todos_request.status);
+    
 
     const all_todos: TodoList = await all_todos_request.json();
 
