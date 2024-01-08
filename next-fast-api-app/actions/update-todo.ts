@@ -40,7 +40,7 @@ export async function updateTodoAction(
           description: description,
           completed: completed,
         }),
-        cache: "no-store",
+        cache: "force-cache",
         next: { tags: ["get_todos"] },
       }
     );

@@ -24,7 +24,7 @@ export async function createTodoAction(values: z.infer<typeof TodoSchema>) {
   console.log("accessToken", accessToken);
 
   // Get All Todos
-  const update_todo = await fetch(`${process.env.BACKEND_URL}/api/todos/`, {
+  const update_todo = await fetch(`${process.env.BACKEND_URL}/api/todos`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -35,7 +35,7 @@ export async function createTodoAction(values: z.infer<typeof TodoSchema>) {
       description: description,
       completed: completed,
     }),
-    cache: "no-store",
+    cache: "force-cache",
     next: { tags: ["get_todos"] },
   });
 

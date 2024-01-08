@@ -12,7 +12,7 @@ export async function fetchAllTodos() {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },
-        cache: 'no-store',
+        cache: 'force-cache',
         next: { tags: ['get_todos'] }
     });
 

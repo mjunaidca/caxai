@@ -18,7 +18,7 @@ export async function deleteTodo(id: string) {
                 Authorization: `Bearer ${accessToken}`,
                 },
             method: 'DELETE',
-            cache: 'no-store',
+            cache: 'force-cache',
             next: { tags: ['get_todos'] }
         });
 

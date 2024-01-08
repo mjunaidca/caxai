@@ -12,7 +12,7 @@ export async function fetchTodoById(id: string) {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
         },
-        cache: 'no-store'
+        cache: 'force-cache'
     });
 
     console.log('FETCH_TODO_STATUS', todo_request.status, todo_request.statusText);
