@@ -30,7 +30,7 @@ async def login_for_access_token(
     return await service_login_for_access_token(form_data, db)
 
 
-@app.post("/api/auth/signup/", response_model=UserOutput, tags=["Authentication"])
+@app.post("/api/auth/signup", response_model=UserOutput, tags=["Authentication"])
 async def signup_users(
     user_data: RegisterUser, db: Session = Depends(get_db)
 ):
