@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 from uuid import UUID
 from fastapi import HTTPException, status
-
+from typing import Union
 _: bool = load_dotenv(find_dotenv())
 
 # to get a string like this run:
@@ -37,7 +37,7 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> str | UUID:
+async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[str, UUID]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: UUID = UUID(payload.get("id"))

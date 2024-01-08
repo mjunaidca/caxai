@@ -6,13 +6,13 @@ from fastapi.security import  OAuth2PasswordRequestForm
 
 from uuid import UUID
 
-from .data.db_config import get_db
-from .models.user_auth import RegisterUser, UserOutput, LoginResonse
-from .service.user_auth import service_signup_users, service_login_for_access_token
-from .data.db_config import get_db
-from .models.todo_crud import TODOBase, TODOResponse
-from .service.todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
-from .utils.helpers import get_current_user_dep
+from .data._db_config import get_db
+from .models._user_auth import RegisterUser, UserOutput, LoginResonse
+from .service._user_auth import service_signup_users, service_login_for_access_token
+from .data._db_config import get_db
+from .models._todo_crud import TODOBase, TODOResponse
+from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
+from .utils._helpers import get_current_user_dep
 
 app = FastAPI()
 

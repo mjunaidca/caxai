@@ -6,11 +6,11 @@ from typing import cast
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from ..models.user_auth import TokenData, RegisterUser
-from ..data.db_config import get_db
-from ..utils.helpers import verify_password
-from ..data.user_auth import get_user, db_signup_users, InvalidUserException
-
+from ..models._user_auth import TokenData, RegisterUser
+from ..data._db_config import get_db
+from ..utils._helpers import verify_password
+from ..data._user_auth import get_user, db_signup_users, InvalidUserException
+from typing import Union
 from jose import JWTError, jwt
 
 from uuid import UUID
@@ -51,7 +51,7 @@ def authenticate_user(db, username: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()
     # Convert UUID to string if it's present in the data
     if 'id' in to_encode and isinstance(to_encode['id'], UUID):

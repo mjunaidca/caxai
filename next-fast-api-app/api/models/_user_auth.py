@@ -1,19 +1,19 @@
 from pydantic import BaseModel
 from uuid import UUID
-
+from typing import Union
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: Union[str, None] = None
 
 
 class User(BaseModel):
     username: str
-    email: str | None = None
-    full_name: str | None = None
-    email_verified: bool | None = None
+    email: Union[str, None] = None
+    full_name: Union[str, None] = None
+    email_verified: Union[bool, None] = None
 
 class RegisterUser(User):
     password: str

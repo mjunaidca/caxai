@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
 
-from ..data.sqlalchemy_models import TODO
-from ..models.todo_crud import TODOBase
+from ._sqlalchemy_models import TODO
+from ..models._todo_crud import TODOBase
 
 class TodoNotFoundError(Exception):
     """

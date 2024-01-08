@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 
-from ..models.user_auth import  RegisterUser
-from ..data.sqlalchemy_models import USER
+from ..models._user_auth import  RegisterUser
+from ._sqlalchemy_models import USER
 
-from ..utils.helpers import get_password_hash
-
+from ..utils._helpers import get_password_hash
+from typing import Union
 class InvalidUserException(Exception):
     """
     Exception raised when a user is not found in the database.
@@ -16,7 +16,7 @@ class InvalidUserException(Exception):
         super().__init__(detail)
 
 
-def get_user(db, username: str | None):
+def get_user(db, username: Union[str, None] = None):
 
     if username is None:
         raise InvalidUserException(status_code=404, detail="Username not provided")
