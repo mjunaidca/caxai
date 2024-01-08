@@ -1,116 +1,74 @@
 # Cal AI: MultiUser AI Powered Personal ToDo Web App
 
-### An End to End Cloud GenAI MultiUser Project.
-A simple Gen AI Powered AI First Microsrvice and Frontend Showcasing the Architecture for API forst Modern Web.
+## Project Structure
 
-+ Layered Architecture Development
-+ Gen AI Powered API Microservice & NextJS14 Frontend
-+ Serverless Posgtgress Database Powered with SQL ALCHEMY ORM
-+ Pytests for Unit Tests, API Tests and End to End Tests
+The project is developed and deployed under different cloud architectures. Each follows a modular and organized structure to ensure maintainability and scalability. Here is an overview of the main directories:
 
-Deployments:
-- FastAPI Backend is dockerized and deplyed on Google Run
-    - User Signup And Login Auhtication using OAuth Protocol
-    - Authenticatied TODOs Crud
-- Streamlit F.E is deployed on streamlit
-- NextJS14 F.E is deployed on Vercel
+- `nextjs_app_fastapi`: A Complete API Microservice and Web App deployed on VERCEL. Active development to add Applied GenAI features is continued for it :D
+    - Visit it's readme for all development, getting started, features and deployment details
 
-#### The Inspiration
-Starting from a simple todo app here I will be adding all features I wanted in any task mangement web app I have tried. 
+- `fastapi_cloud_msa`: 
+    - Contains the FastAPI backend code, including API routes, models, and database configurations.
+    - Containorized using Docker and Deployed on Google Run
+- `nextjs_msa_fe`: Frontend developed for the `fastapi_cloud_msa` backend and deplyed on Vercel
+- `streamlit_mjs_prototype`: Frontend prototype developed in streamlit and deployed on streamlit cloud.
 
-This is more like a project build for personal use and open sourced for others to learn and maybe try using it.
+The project structure is designed to promote code organization, separation of concerns, and ease of collaboration among team members.
 
-*** Note: The Project is UnderProgress.
+## Overview
 
-#### Endpoints
+Cal AI is an end-to-end cloud GenAI multi-user project that showcases the architecture for an API-first modern web application. It utilizes a layered architecture development approach and includes a Gen AI powered API microservice, a NextJS14 frontend, and a serverless PostgreSQL database powered with SQLAlchemy ORM. The project also includes unit tests, API tests, and end-to-end tests using Pytest.
 
-![FastAPI EndPoints](./public/routes.png)
+## Inspiration
 
-#### Streamlit Protype
+Cal AI started as a simple todo app but has evolved to include all the features the developer wanted in a task management web app. It is a personal project that has been open-sourced for others to learn from and potentially use.
 
-#### Implementes Authentication and Todos Crud Prototype
+**Note: The project is still a work in progress.**
 
-#### In progress Features
+## Run Database Migrations with Alembic
 
-- A Notion like Weekly to do list where I can add each week todos
-    - At week end the sheet is deleted while the todos are saved in database.
-    - AI can talk or inform in text about my daily tasks
-    - At week end ana analysization about what I did and a segregation showing
-        1. Time Spend on learning
-        2. Recursive Tasks
-        etc....
+To run migrations using Alembic, follow these steps:
 
-- Whatsapp, Skype or Slack message/notifications about daily work
+1. Run `alembic init migrations` to initialize the migrations directory.
 
-### Features To Add in the future
+2. In `alembic.ini`, remove the URL in the `sqlalchemy.url` field.
 
-#### Adaptive Task Prioritization:
+3. In `migrations/env.py`, import `dotenv` and add the following code:
+
+
+## Pre Development Planned Features
+
+- A Notion-like weekly to-do list where users can add todos for each week. At the end of the week, the sheet is deleted while the todos are saved in the database.
+- AI-powered text-based daily task notifications or reminders.
+- Weekly analysis of tasks completed, including time spent on learning and recursive tasks.
+- Integration with messaging platforms like WhatsApp, Skype, or Slack for daily work notifications.
+
+## Future GenAI Personalization Features
+
+### Adaptive Task Prioritization
 
 - Problem: Users struggle with constantly changing priorities and task overload.
-- AI Solution: Implement an AI algorithm that learns from the user's task completion patterns and adjusts task priorities accordingly. For instance, if a user consistently prioritizes work-related tasks in the mornings, the app could automatically adjust future task priorities.
-Predictive Scheduling and Reminders:
+- AI Solution: Implement an AI algorithm that learns from the user's task completion patterns and adjusts task priorities accordingly. For example, if a user consistently prioritizes work-related tasks in the mornings, the app could automatically adjust future task priorities.
 
-------------------------------------
+### Predictive Scheduling and Reminders
 
 - Problem: Users often underestimate the time required for tasks or forget deadlines.
 - AI Solution: AI could analyze past task completion times and suggest realistic timeframes for new tasks. It could also anticipate and remind users of recurring tasks based on historical data.
-Integration with Other Tools:
 
-------------------------------------
+### Integration with Other Tools
 
 - Problem: Current apps often exist in isolation, not syncing well with other productivity tools.
 - AI Solution: Develop AI capabilities to integrate and sync data with other apps (like calendars, emails) to provide a unified task management system. For example, AI can suggest to-do items from emails or meetings scheduled in the calendar.
-Context-Aware Suggestions:
 
-------------------------------------
+### Context-Aware Suggestions
 
 - Problem: Users receive generic task suggestions that might not align with their current context or needs.
 - AI Solution: Utilize AI to offer context-aware suggestions, like recommending grocery shopping when the user is near a supermarket, based on location data and past behavior.
-Voice-Activated Controls:
 
-------------------------------------
+### Voice-Activated Controls
 
 - Problem: Manual entry of tasks can be cumbersome.
 - AI Solution: Implement sophisticated voice recognition to allow users to add tasks hands-free, enhancing accessibility and convenience.
 
-------------------------------------
-
-## Run Migrations One Time Using Alembic
-
-Reason: It's recommended in SQLAlchemcy documentation to use alembic for db migrations in big projects.
-
-We are using Neon Serverless Postgress Database and SQL Alchemy ORM.
-
-Run Migratiosn: 
-
-1. `alembic init migrations`
-
-In alembic.ini rm the url here sqlalchemy.url = 
-
-In migrations/env.py import dotenv and then:
-
-config = context.config
-
-###### ---------------- added code here -------------------------#
-###### this will overwrite the ini-file sqlalchemy.url path
-###### with the path given in the config of the main code
-
-`config.set_main_option("sqlalchemy.url", os.environ.get("DB_URL"))`
-
-Replace # target_metadata = None with 
-
-```
-from app.data sqlalchemy_models
-target_metadata = sqlalchemy_models.Base.metadata
-```
-
-Here I made fastapi_backend a module and then used an absolute import above.
-
-2. `alembic revision --autogenerate -m "Add Todos Table`
-
-3. `alembic upgrade head`
-
-Helpful Reference:
-https://ahmed-nafies.medium.com/fastapi-with-sqlalchemy-postgresql-and-alembic-and-of-course-docker-f2b7411ee396
-
-## Docker Commands
+## Running Locally 
+Refer to nextjs_app_fastapi dir readme.md for all setup, configuration and development details. Or feel free to reach out if you face any issues whiles testing or running it locally.

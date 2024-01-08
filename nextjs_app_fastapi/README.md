@@ -15,6 +15,9 @@
 - SqlAlchemy ORM and Neon Serverless Postgress SQL Database 
 - Complete Unit, End to End and Integration tests using pytest and uttitest
 
+- `api`: Contains the FastAPI backend microservice code, including API routes, models, and database configurations.
+
+
 ### NextJS14
 - Be Dynamic at the Speed of Static
 - Use Server Actions for all User Actions

@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Deployments
+
+- The FastAPI backend is dockerized and deployed on Google Run. It includes user signup and login authentication using the OAuth protocol, as well as authenticated CRUD operations for todos.
+- The Streamlit frontend is deployed on Streamlit.
+- This NextJS14 frontend is deployed on Vercel and using the backend fastapi microservice deployed on google cloud.
+
 ## Getting Started
 
 First, run the development server:
