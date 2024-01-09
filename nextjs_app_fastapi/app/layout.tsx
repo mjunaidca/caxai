@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { Analytics } from '@vercel/analytics/react';
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,6 +27,7 @@ export default async function RootLayout({
           {children}
           <Toaster />
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </SessionProvider>
