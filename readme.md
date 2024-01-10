@@ -1,10 +1,6 @@
-# Cal AI: MultiUser AI Powered Personal ToDo Web App
+# CalX: Applied GenAI Multi User Todo App
 
-## Understanding Repo Structure
-
-The project is developed and deployed under different cloud architectures. Each follows a modular and organized structure to ensure maintainability and scalability. Here is an overview of the main directories:
-
-#### 1. `nextjs_app_fastapi`: 
+#### Built in NextJS14 Fastapi and deployed on Vercel
 
 A Complete API Microservice and Web App deployed on VERCEL. Active development to add Applied GenAI features is continued for it :D
 
@@ -18,75 +14,74 @@ A Complete API Microservice and Web App deployed on VERCEL. Active development t
 
 ![FastAPI EndPoints](./public/endpoints.png)
 
+#### GenAI features are In Progress!
 
-#### 2. `fastapi_cloud_msa`: 
+## Features And Tech Stack
 
-    - Contains the FastAPI backend code, including API routes, models, and database configurations.
-    - Containorized using Docker and Deployed on Google Run
+### FastAPI Microservice
+- User registration and authentication
+- CRUD operations for todos
+- Efficently handle Database Connections (open & close sessions for users)
+- OAuth protocol to implement authentication and security
+- Configured Alembic to generate database schema and run migrations
+- SqlAlchemy ORM and Neon Serverless Postgress SQL Database 
+- Complete Unit, End to End and Integration tests using pytest and uttitest
 
-### 3. `nextjs_msa_fe`: 
-Frontend developed for the `fastapi_cloud_msa` backend and deplyed on Vercel
-
-### 4. `streamlit_mjs_prototype`: 
-
-Frontend prototype developed in streamlit and deployed on streamlit cloud.
-
-The project structure is designed to promote code organization, separation of concerns, and ease of collaboration among team members.
-
-## Overview
-
-Cal AI is an end-to-end cloud GenAI multi-user project that showcases the architecture for an API-first modern web application. It utilizes a layered architecture development approach and includes a Gen AI powered API microservice, a NextJS14 frontend, and a serverless PostgreSQL database powered with SQLAlchemy ORM. The project also includes unit tests, API tests, and end-to-end tests using Pytest.
-
-## Inspiration
-
-Cal AI started as a simple todo app but has evolved to include all the features the developer wanted in a task management web app. It is a personal project that has been open-sourced for others to learn from and potentially use.
-
-**Note: The project is still a work in progress.**
-
-## Run Database Migrations with Alembic
-
-To run migrations using Alembic, follow these steps:
-
-1. Run `alembic init migrations` to initialize the migrations directory.
-
-2. In `alembic.ini`, remove the URL in the `sqlalchemy.url` field.
-
-3. In `migrations/env.py`, import `dotenv` and add the following code:
+- `api`: Contains the FastAPI backend microservice code, including API routes, models, and database configurations.
 
 
-## Pre Development Planned Features
+### NextJS14
+- Be Dynamic at the Speed of Static
+- Use Server Actions for all User Actions
+- Middleware and NextAuth5 to implement user Authentication & Secure Routes
+- Streaming and Suspense to enchance UI
+- A custom todos management dashboard for all users
+- Shad CN Ui and Tailwind Css for UI engineering
 
-- A Notion-like weekly to-do list where users can add todos for each week. At the end of the week, the sheet is deleted while the todos are saved in the database.
-- AI-powered text-based daily task notifications or reminders.
-- Weekly analysis of tasks completed, including time spent on learning and recursive tasks.
-- Integration with messaging platforms like WhatsApp, Skype, or Slack for daily work notifications.
+## Running the Project Locally 
 
-## Future GenAI Personalization Features
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Adaptive Task Prioritization
+1. Clone the repository:
+```sh
+git clone ....
+```
 
-- Problem: Users struggle with constantly changing priorities and task overload.
-- AI Solution: Implement an AI algorithm that learns from the user's task completion patterns and adjusts task priorities accordingly. For example, if a user consistently prioritizes work-related tasks in the mornings, the app could automatically adjust future task priorities.
+2. Rename .env.example to .env and add misisng environment variables
 
-### Predictive Scheduling and Reminders
+3. Run pnpm install to install the missing dependencies
 
-- Problem: Users often underestimate the time required for tasks or forget deadlines.
-- AI Solution: AI could analyze past task completion times and suggest realistic timeframes for new tasks. It could also anticipate and remind users of recurring tasks based on historical data.
+4. Run Database Migrations
 
-### Integration with Other Tools
+- `alembic revision --autogenerate -m "Add Todos Table`
 
-- Problem: Current apps often exist in isolation, not syncing well with other productivity tools.
-- AI Solution: Develop AI capabilities to integrate and sync data with other apps (like calendars, emails) to provide a unified task management system. For example, AI can suggest to-do items from emails or meetings scheduled in the calendar.
+- `alembic upgrade head`
 
-### Context-Aware Suggestions
+5. run pnpm dev and get the project running locally
 
-- Problem: Users receive generic task suggestions that might not align with their current context or needs.
-- AI Solution: Utilize AI to offer context-aware suggestions, like recommending grocery shopping when the user is near a supermarket, based on location data and past behavior.
+### Vercel Deplyment
 
-### Voice-Activated Controls
+Delete the .next and __pucache__ and .mypy... cache files and follow the steps:
 
-- Problem: Manual entry of tasks can be cumbersome.
-- AI Solution: Implement sophisticated voice recognition to allow users to add tasks hands-free, enhancing accessibility and convenience.
+a. Run `vercel link` and then add all env variables to vercel deplyment. Replace the localhost vars with vercel deoloyment link
 
-## Running Locally 
-Refer to nextjs_app_fastapi dir readme.md for all setup, configuration and development details. Or feel free to reach out if you face any issues whiles testing or running it locally.
+b. Finally run `vercel --prod` to deploy the project.
+
+
+## Future Development Roadmap
+
+Here’s what we envision for future updates:
+
+- Advanced AI Features
+- Intelligent Task Prioritization: 
+- Context-Aware Task Suggestions: 
+- Seamless Integration with External Tools
+- Smart Calendar Sync
+
+
+## The Inspiration
+Inspired by the need for a personalized, AI-driven task management tool, this project is a journey towards creating an app that not only assists in managing daily tasks but also learns and adapts to the user's lifestyle and preferences.
+
+## Thoughts
+
+Feel free to ask any questions or provide feedback. Contributions are also welcome!
