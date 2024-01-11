@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from datetime import datetime
 from typing import Union
@@ -25,3 +25,14 @@ class TODOResponse(TODOBase):
     created_at: datetime
     updated_at: datetime
     user_id: UUID
+
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedTodos(BaseModel):
+    """
+    Represents a paginated list of TODO items.
+    """
+    count: int
+    next: str | None = None
+    previous: str | None = None
+    todos: list[TODOResponse]

@@ -12,23 +12,44 @@ class TodoNotFoundError(Exception):
     pass
 
 # get all TODO items
-def get_all_todo_data(db: Session, user_id: UUID) -> list[TODO]:
+# get all TODO items
+def get_all_todo_data(db: Session, user_id: UUID, offset: int, per_page: int) -> list[TODO]:
     """
-    Get all TODO items from the database.
+    Get TODO items with pagination from the database.
 
     Args:
         db (Session): The database session.
+        user_id (UUID): The user's ID.
+        offset (int): The number of items to skip.
+        per_page (int): The number of items per page.
 
     Returns:
-        list[TODO]: The list of TODO items.
+        List[TODO]: The list of TODO items.
     """
     try:
-        return db.query(TODO).filter(TODO.user_id == user_id).all()
+        return db.query(TODO).filter(TODO.user_id == user_id).offset(offset).limit(per_page).all()
     except SQLAlchemyError as e:
         # Log the exception for debugging purposes
-        print(f"Error getting all TODO items: {e}")
+        print(f"Error getting TODO items with pagination: {e}")
         # Re-raise the exception to be handled at the endpoint level
         raise
+# def get_all_todo_data(db: Session, user_id: UUID) -> list[TODO]:
+#     """
+#     Get all TODO items from the database.
+
+#     Args:
+#         db (Session): The database session.
+
+#     Returns:
+#         list[TODO]: The list of TODO items.
+#     """
+#     try:
+#         return db.query(TODO).filter(TODO.user_id == user_id).all()
+#     except SQLAlchemyError as e:
+#         # Log the exception for debugging purposes
+#         print(f"Error getting all TODO items: {e}")
+#         # Re-raise the exception to be handled at the endpoint level
+#         raise
 
 # get a single TODO item
 def get_single_todo_data(todo_id: UUID, db: Session, user_id: UUID) -> TODO:

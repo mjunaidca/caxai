@@ -3,31 +3,51 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 from ..data._sqlalchemy_models import TODO
-from ..models._todo_crud import TODOBase
+from ..models._todo_crud import TODOBase, TODOResponse
 from ..data._todos_crud import create_todo_data, get_single_todo_data, get_all_todo_data, full_update_todo_data, partial_update_todo_data, delete_todo_data, TodoNotFoundError
 
 from uuid import UUID
 
 # get all TODO items
-
-
-def get_all_todos_service(db: Session, user_id: UUID) -> list[TODO]:
+def get_all_todos_service(db: Session, user_id: UUID, offset: int, per_page: int) -> list[TODOResponse]:
     """
-    Get all TODO items from the database.
+    Get all TODO items with pagination from the database.
 
     Args:
         db (Session): The database session.
+        user_id (UUID): The user's ID.
+        offset (int): The number of items to skip.
+        per_page (int): The number of items per page.
 
     Returns:
-        list[TODO]: The list of TODO items.
+        List[TODO]: The list of TODO items.
     """
     try:
-        return get_all_todo_data(db, user_id)
+        get_todos: list[TODO] = get_all_todo_data(db, user_id, offset, per_page)
+        return [TODOResponse.model_validate(todo) for todo in get_todos]
     except Exception as e:
         # Log the exception for debugging purposes
-        print(f"Error getting all TODO items: {e}")
+        print(f"Error getting all TODO items with pagination: {e}")
         # Re-raise the exception to be handled at the endpoint level
         raise
+
+# def get_all_todos_service(db: Session, user_id: UUID) -> list[TODO]:
+#     """
+#     Get all TODO items from the database.
+
+#     Args:
+#         db (Session): The database session.
+
+#     Returns:
+#         list[TODO]: The list of TODO items.
+#     """
+#     try:
+#         return get_all_todo_data(db, user_id)
+#     except Exception as e:
+#         # Log the exception for debugging purposes
+#         print(f"Error getting all TODO items: {e}")
+#         # Re-raise the exception to be handled at the endpoint level
+#         raise
 
 
 # get a single TODO item

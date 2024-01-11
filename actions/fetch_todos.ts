@@ -7,8 +7,11 @@ export async function fetchAllTodos() {
 
     const accessToken = (session.user.accessToken)
 
+    const page = 1;
+    const perPage = 10;
+
     // Get All Todos
-    const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos`, {
+    const all_todos_request = await fetch( `${process.env.BACKEND_URL}/api/todos/?page=${page}&per_page=${perPage}`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },
@@ -23,7 +26,9 @@ export async function fetchAllTodos() {
     console.log(all_todos_request.status);
     
 
-    const all_todos: TodoList = await all_todos_request.json();
+    const paginated_all_todos: PagiantedTodos = await all_todos_request.json();
+
+    const all_todos: TodoList = paginated_all_todos.todos;
 
     return all_todos;
 }

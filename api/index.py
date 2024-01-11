@@ -1,8 +1,8 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
 
-from fastapi import Depends, FastAPI, HTTPException
-from fastapi.security import  OAuth2PasswordRequestForm
+from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.security import OAuth2PasswordRequestForm
 
 from uuid import UUID
 
@@ -10,23 +10,27 @@ from .data._db_config import get_db
 from .models._user_auth import RegisterUser, UserOutput, LoginResonse
 from .service._user_auth import service_signup_users, service_login_for_access_token
 from .data._db_config import get_db
-from .models._todo_crud import TODOBase, TODOResponse
+from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
 from .utils._helpers import get_current_user_dep
 
 app = FastAPI()
 
 # Hello World
+
+
 @app.get("/api", tags=["Welcome"])
 def read_root():
     return {"Hello": "World"}
 
 # user_auth.py web layer routes
+
+
 @app.post("/api/auth/login", response_model=LoginResonse, tags=["Authentication"])
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)
 ):
-    
+
     return await service_login_for_access_token(form_data, db)
 
 
@@ -39,15 +43,37 @@ async def signup_users(
 #  todos_crud.py web layer routes
 
 # Get ALL TODOS
-@app.get("/api/todos", response_model=list[TODOResponse], tags=["TODO Crud"])
-def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+
+
+@app.get("/api/todos", response_model=PaginatedTodos, tags=["TODO Crud"])
+def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep), page: int = Query(1, description="Page number", ge=1),
+              per_page: int = Query(10, description="Items per page", ge=1, le=100)):
     try:
-        return get_all_todos_service(db, user_id)
+         # Calculate the offset to skip the appropriate number of items
+        offset = (page - 1) * per_page
+        all_todos = get_all_todos_service(db, user_id, offset, per_page)
+        
+        # Calculate next and previous page URLs
+        next_page = f"?page={page + 1}&per_page={per_page}" if len(all_todos) == per_page else None
+        previous_page = f"?page={page - 1}&per_page={per_page}" if page > 1 else None
+        
+        # Return data in paginated format
+        paginated_data = {
+            "count": len(all_todos),
+            "next": next_page,
+            "previous": previous_page,
+            "todos": all_todos
+        }
+        
+        return paginated_data
+        # return get_all_todos_service(db, user_id)
     except Exception as e:
         # Handle specific exceptions with different HTTP status codes if needed
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
 # Get a Single TODO item
+
+
 @app.get("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
     try:

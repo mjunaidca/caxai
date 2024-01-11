@@ -9,4 +9,11 @@ type TodoItem = {
   };
   
   type TodoList = TodoItem[];
+
+  type PagiantedTodos = {
+    todos: TodoList;
+    count: number;
+    next: number;
+    previous: number;
+  }
   
