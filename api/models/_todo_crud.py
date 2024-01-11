@@ -3,6 +3,7 @@ from uuid import UUID
 from datetime import datetime
 from typing import Union
 
+
 class TODOBase(BaseModel):
     """
     Represents a TODO in the database.
@@ -11,11 +12,13 @@ class TODOBase(BaseModel):
     description: Union[str, None] = None
     completed: bool = False
 
+
 class TODOCreate(TODOBase):
     """
     Represents a TODO item to be created.
     """
     id: UUID
+
 
 class TODOResponse(TODOBase):
     """
@@ -28,11 +31,12 @@ class TODOResponse(TODOBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class PaginatedTodos(BaseModel):
     """
     Represents a paginated list of TODO items.
     """
     count: int
-    next: str | None = None
-    previous: str | None = None
+    next:  Union[str, None] = None
+    previous:  Union[str, None] = None
     todos: list[TODOResponse]

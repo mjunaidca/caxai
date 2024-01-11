@@ -14,7 +14,27 @@ from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
 from .utils._helpers import get_current_user_dep
 
-app = FastAPI()
+app = FastAPI(
+    title="Cal AI",
+    description="A multi-user to-do application for efficient task management.",
+    version="1.0.0",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "Deadpoolio the Amazing",
+        "url": "http://x-force.example.com/contact/",
+        "email": "dp@x-force.example.com",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+    servers=[
+        {
+            "url": "http://localhost:3000",
+            "description": "Local server",
+        },
+    ]
+)
 
 # Hello World
 
