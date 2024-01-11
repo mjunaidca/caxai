@@ -90,3 +90,11 @@ Feel free to ask any questions or provide feedback. Contributions are also welco
 OAuth 2.0 Authorization Code Grant Type
 
 https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type#:~:text=The%20Authorization%20Code%20Grant%20Type,used%20OAuth%202.0%20grant%20types.
+
+The Token URL Response:
+
+https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147
+
+Understand oauth code flow
+
+https://www.oauth.com/oauth2-servers/single-page-apps/
