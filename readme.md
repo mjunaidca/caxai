@@ -85,3 +85,8 @@ Inspired by the need for a personalized, AI-driven task management tool, this pr
 ## Thoughts
 
 Feel free to ask any questions or provide feedback. Contributions are also welcome!
+
+
+OAuth 2.0 Authorization Code Grant Type
+
+https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type#:~:text=The%20Authorization%20Code%20Grant%20Type,used%20OAuth%202.0%20grant%20types.

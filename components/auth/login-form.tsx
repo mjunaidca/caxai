@@ -25,7 +25,23 @@ import { login } from "@/actions/login";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  // http://localhost:3000/auth/login?response_type=code&client_id=&redirect_uri=https://github.com/mjunaidca&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
+
+  // Get all the query params
+  const redirect_uri = searchParams.get("redirect_uri");
+  const client_id = searchParams.get("client_id");
+  const response_type = searchParams.get("response_type");
+  const scope = searchParams.get("scope");
+  const state = searchParams.get("state");
+
+  const queryParams = `?redirect_uri=${redirect_uri}&client_id=${client_id}&response_type=${response_type}&scope=${scope}&state=${state}`
+
+  let callbackUrl: string | null = null
+
+  if (redirect_uri) {
+    callbackUrl = `/dashboard${queryParams}`
+  }
+
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
@@ -52,7 +68,7 @@ export const LoginForm = () => {
     
 
     startTransition(() => {
-      login(values)
+      login(values, callbackUrl)
         .then((data) => {
           if (data?.error) {
             form.reset();

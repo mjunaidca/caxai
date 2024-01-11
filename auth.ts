@@ -26,7 +26,7 @@ export const {
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // Convert the user object to unknown first, then to ExtendedUserResponse
       const extendedUserResponse = user as unknown as ExtendedUserResponse | null;
     
