@@ -17,15 +17,6 @@ ALGORITHM = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get(
     "ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 
-if not SECRET_KEY:
-    raise ValueError("No SECRET_KEY set for authentication")
-
-if not ALGORITHM:
-    raise ValueError("No ALGORITHM set for authentication")
-
-if ACCESS_TOKEN_EXPIRE_MINUTES is None:
-    raise ValueError("No ACCESS_TOKEN_EXPIRE_MINUTES set for authentication")
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
@@ -39,6 +30,12 @@ def get_password_hash(password):
 
 async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[str, UUID]:
     try:
+        if not isinstance(SECRET_KEY, str):
+            raise ValueError("SECRET_KEY must be a string")
+
+        if not isinstance(ALGORITHM, str):
+            raise ValueError("ALGORITHM must be a string")
+        
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: UUID = UUID(payload.get("id"))
         # You can add more user-related validation here if needed
