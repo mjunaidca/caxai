@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Form
@@ -14,7 +14,7 @@ from .service._user_auth import service_signup_users, service_login_for_access_t
 from .data._db_config import get_db
 from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
-from .utils._helpers import get_current_user_dep, create_refresh_token
+from .utils._helpers import get_current_user_dep, create_refresh_token, validate_refresh_token
 
 app = FastAPI(
     title="Cal AI",
@@ -45,39 +45,51 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 # Get Access Token against user_id encoded temp token
 @app.post("/api/token", response_model=GPTToken, tags=["Authentication"])
-async def get_access_token(code: Annotated[str, Form()]):
-    user_id = await get_current_user_dep(code)
-
-    print('user_id', user_id)
-
-    if not user_id:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # Define token expiration times
-    access_token_expires = timedelta(minutes=float(3))
-    # refresh_token_expires = timedelta(days=7)
-
-    access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
+async def get_access_token(
+    grant_type: str = Form(...),
+    refresh_token: Optional[str] = Form(None),
+    code: Optional[str] = Form(None)
+):
     
-    """ 
-    https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147 
-    If GPT expires the token by adding expire time then I will create this part of flow later when adding
-    forgot password, email code validation in OAuth2 flow for GPT and web app
-    """
-    # refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
+     # Token refresh flow
+    if grant_type == "refresh_token":
+        # Check if the refresh token is Present
+        if not refresh_token:
+            raise HTTPException(status_code=401, detail="Refresh token not provided")
+        # Validate the refresh token and client credentials
+        user_id = await validate_refresh_token(refresh_token)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    # Initial token generation flow
+    elif grant_type == "authorization_code":
+        user_id = await get_current_user_dep(code)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="User not found")
+    else:
+        raise HTTPException(status_code=401, detail="Invalid grant type")
+
+    # Generate access token
+    access_token_expires = timedelta(minutes=float(2))
+    access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
+
+    # Generate refresh token (you might want to set a longer expiry for this)
+    refresh_token_expires = timedelta(minutes=float(4))
+    rotated_refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
 
     return {
         "access_token": access_token,
         "token_type": "Bearer",
-        "expires_in": int(access_token_expires.total_seconds())
+        "expires_in": int(access_token_expires.total_seconds()),
+        "refresh_token": rotated_refresh_token  # Include refresh token in the response
     }
+
 
 # Get temp Code against user_id to implentent OAuth2 for Custom Gpt
 @app.get("/api/auth/temp-code", tags=["Authentication"])
 async def get_temp_code(user_id: UUID):
-    code = create_access_token( data={"id": user_id})
+    code = create_access_token(data={"id": user_id})
     return {"code": code}
-
 
 
 @app.post("/api/auth/signup", response_model=UserOutput, tags=["Authentication"])
@@ -133,8 +145,6 @@ def create_todo(todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = D
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
 # Update a Single TODO item Completly
-
-
 @app.put("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
     try:
@@ -162,9 +172,3 @@ def delete_todo(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = De
     except Exception as e:
         # Handle specific exceptions with different HTTP status codes if needed
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
-
-
-# https://caxgpt.vercel.app/auth/login?response_type=code&client_id=&redirect_uri=https%3A%2F%2Fchat.openai.com%2Faip%2Fg-3e0e5b8cffe6595098a7030d91a9502af4a89130%2Foauth%2Fcallback&scope=&state=92497294-3eb3-452c-813d-53c8e2c4b923
-
-    # Sign in to register
-# https://caxgpt.vercel.app/auth/register?redirect_uri=https://chat.openai.com/aip/g-3e0e5b8cffe6595098a7030d91a9502af4a89130/oauth/callback&state=92497294-3eb3-452c-813d-53c8e2c4b923&response_type=code&client_id=&scope=

@@ -102,3 +102,7 @@ https://www.oauth.com/oauth2-servers/single-page-apps/
 Authorization Code Grant
 
 https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/
+
+How OAuth refresh tokens & revocation work with GPT Actions
+
+https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147

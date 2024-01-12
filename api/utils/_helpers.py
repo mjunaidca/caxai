@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 from uuid import UUID
 from fastapi import HTTPException, status
-from typing import Union
+from typing import Union, Any
 from datetime import datetime, timedelta
 
 _: bool = load_dotenv(find_dotenv())
@@ -48,6 +48,27 @@ async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[st
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+# Function to verify refresh token
+async def validate_refresh_token(refresh_token: str) -> Union[str, None]:
+    try:
+        if not isinstance(SECRET_KEY, str):
+            raise ValueError("SECRET_KEY must be a string")
+
+        if not isinstance(ALGORITHM, str):
+            raise ValueError("ALGORITHM must be a string")
+
+        payload: dict[str, Any] = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: Union[str, None] = payload.get("id")
+
+        # If user_id is None, the token is invalid
+        if not user_id:
+            return None
+
+        return user_id
+    except JWTError:
+        return None
+    
 
 def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()

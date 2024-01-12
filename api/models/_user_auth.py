@@ -7,7 +7,7 @@ class Token(BaseModel):
 
 class GPTToken(Token):
     expires_in: int
-    # refresh_token: str
+    refresh_token: str
 
 
 
