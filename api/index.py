@@ -14,7 +14,7 @@ from .service._user_auth import service_signup_users, service_login_for_access_t
 from .data._db_config import get_db
 from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
-from .utils._helpers import get_current_user_dep, create_refresh_token, validate_refresh_token
+from .utils._helpers import get_current_user_dep, create_refresh_token, validate_refresh_token, credentials_exception
 
 app = FastAPI(
     title="Cal AI",
@@ -55,26 +55,26 @@ async def get_access_token(
     if grant_type == "refresh_token":
         # Check if the refresh token is Present
         if not refresh_token:
-            raise HTTPException(status_code=401, detail="Refresh token not provided")
+            raise credentials_exception
         # Validate the refresh token and client credentials
         user_id = await validate_refresh_token(refresh_token)
         if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
+            raise credentials_exception
 
     # Initial token generation flow
     elif grant_type == "authorization_code":
         user_id = await get_current_user_dep(code)
         if not user_id:
-            raise HTTPException(status_code=401, detail="User not found")
+            raise credentials_exception
     else:
-        raise HTTPException(status_code=401, detail="Invalid grant type")
+        raise credentials_exception
 
     # Generate access token
-    access_token_expires = timedelta(minutes=float(2))
+    access_token_expires = timedelta(minutes=float(1))
     access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
 
     # Generate refresh token (you might want to set a longer expiry for this)
-    refresh_token_expires = timedelta(minutes=float(4))
+    refresh_token_expires = timedelta(minutes=float(2))
     rotated_refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
 
     return {

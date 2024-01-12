@@ -106,3 +106,10 @@ https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/
 How OAuth refresh tokens & revocation work with GPT Actions
 
 https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147
+
+#### To Study:
+
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-proof-key-for-code-exchange-pkce
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/which-oauth-2-0-flow-should-i-use

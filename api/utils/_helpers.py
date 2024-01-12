@@ -92,3 +92,11 @@ def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = Non
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
+
+
+# Create a custom credentials exception
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    headers={"WWW-Authenticate": 'Bearer'},
+    detail={"error": "invalid_token", "error_description": "The access token expired"}
+)
