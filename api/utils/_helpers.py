@@ -8,6 +8,8 @@ import os
 from uuid import UUID
 from fastapi import HTTPException, status
 from typing import Union
+from datetime import datetime, timedelta
+
 _: bool = load_dotenv(find_dotenv())
 
 # to get a string like this run:
@@ -46,3 +48,26 @@ async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[st
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = None):
+    to_encode = data.copy()
+    # Convert UUID to string if it's present in the data
+    if 'id' in to_encode and isinstance(to_encode['id'], UUID):
+        to_encode['id'] = str(to_encode['id'])
+
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(days=7)  # Set the expiration time for refresh tokens to 7 days
+
+    to_encode.update({"exp": expire})
+
+    if not isinstance(SECRET_KEY, str):
+        raise ValueError("SECRET_KEY must be a string")
+
+    if not isinstance(ALGORITHM, str):
+        raise ValueError("ALGORITHM must be a string")
+
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt

@@ -5,6 +5,12 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class GPTToken(Token):
+    expires_in: int
+    # refresh_token: str
+
+
+
 class TokenData(BaseModel):
     username: Union[str, None] = None
 

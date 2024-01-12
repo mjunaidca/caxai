@@ -77,6 +77,13 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    """   
+    https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147 
+    
+    If GPT expires the token by adding expire time then I will create this part of flow later when adding
+    forgot password, email code validation in OAuth2 flow for GPT and web app
+    """
+     
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

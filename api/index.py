@@ -9,12 +9,12 @@ from datetime import timedelta
 
 # Now you can use relative imports
 from .data._db_config import get_db
-from .models._user_auth import RegisterUser, UserOutput, LoginResonse, Token
+from .models._user_auth import RegisterUser, UserOutput, LoginResonse, GPTToken
 from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token
 from .data._db_config import get_db
 from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
-from .utils._helpers import get_current_user_dep
+from .utils._helpers import get_current_user_dep, create_refresh_token
 
 app = FastAPI(
     title="Cal AI",
@@ -43,8 +43,8 @@ app = FastAPI(
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
     return await service_login_for_access_token(form_data, db)
 
-# Get Access Token against user_id
-@app.post("/api/token", response_model=Token, tags=["Authentication"])
+# Get Access Token against user_id encoded temp token
+@app.post("/api/token", response_model=GPTToken, tags=["Authentication"])
 async def get_access_token(code: Annotated[str, Form()]):
     user_id = await get_current_user_dep(code)
 
@@ -53,9 +53,24 @@ async def get_access_token(code: Annotated[str, Form()]):
     if not user_id:
         raise HTTPException(status_code=404, detail="User not found")
 
-    access_token_expires = timedelta(minutes=float(120))
+    # Define token expiration times
+    access_token_expires = timedelta(minutes=float(3))
+    # refresh_token_expires = timedelta(days=7)
+
     access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
-    return {"access_token": access_token, "token_type": "Bearer"}
+    
+    """ 
+    https://community.openai.com/t/guide-how-oauth-refresh-tokens-revocation-work-with-gpt-actions/533147 
+    If GPT expires the token by adding expire time then I will create this part of flow later when adding
+    forgot password, email code validation in OAuth2 flow for GPT and web app
+    """
+    # refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
+
+    return {
+        "access_token": access_token,
+        "token_type": "Bearer",
+        "expires_in": int(access_token_expires.total_seconds())
+    }
 
 # Get temp Code against user_id to implentent OAuth2 for Custom Gpt
 @app.get("/api/auth/temp-code", tags=["Authentication"])
@@ -147,3 +162,9 @@ def delete_todo(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = De
     except Exception as e:
         # Handle specific exceptions with different HTTP status codes if needed
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
+
+# https://caxgpt.vercel.app/auth/login?response_type=code&client_id=&redirect_uri=https%3A%2F%2Fchat.openai.com%2Faip%2Fg-3e0e5b8cffe6595098a7030d91a9502af4a89130%2Foauth%2Fcallback&scope=&state=92497294-3eb3-452c-813d-53c8e2c4b923
+
+    # Sign in to register
+# https://caxgpt.vercel.app/auth/register?redirect_uri=https://chat.openai.com/aip/g-3e0e5b8cffe6595098a7030d91a9502af4a89130/oauth/callback&state=92497294-3eb3-452c-813d-53c8e2c4b923&response_type=code&client_id=&scope=
