@@ -22,7 +22,7 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
 import { useToast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export const RegisterForm = () => {
@@ -30,7 +30,16 @@ export const RegisterForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast()
-  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get all the query params
+  const redirect_uri = searchParams.get("redirect_uri");
+  const client_id = searchParams.get("client_id");
+  const response_type = searchParams.get("response_type");
+  const scope = searchParams.get("scope");
+  const state = searchParams.get("state");
+
+  const queryParams = `?redirect_uri=${redirect_uri}&client_id=${client_id}&response_type=${response_type}&scope=${scope}&state=${state}`
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -63,7 +72,7 @@ export const RegisterForm = () => {
             title: "Signup Success",
             description: "Please Login To Continue",
             action: (
-              <Link href='/auth/login'><ToastAction altText="Login to Continue!">Login Now</ToastAction></Link> 
+              <Link href={`/auth/login${queryParams}`}><ToastAction altText="Login to Continue!">Login Now</ToastAction></Link> 
             ),
 
           })
@@ -76,7 +85,7 @@ export const RegisterForm = () => {
     <CardWrapper
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
+      backButtonHref={redirect_uri ? `/auth/login${queryParams}` : "/auth/login"}
       showSocial
     >
       <Form {...form}>

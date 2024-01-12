@@ -1,7 +1,7 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Body, Form
+from fastapi import Depends, FastAPI, HTTPException, Query, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
 from uuid import UUID
@@ -49,10 +49,24 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 # Get Access Token against user_id
 @app.post("/api/token", response_model=Token, tags=["Authentication"])
-async def get_access_token(code: Annotated[UUID, Form()]):
+async def get_access_token(code: Annotated[str, Form()]):
+    user_id = await get_current_user_dep(code)
+
+    print('user_id', user_id)
+
+    if not user_id:
+        raise HTTPException(status_code=404, detail="User not found")
+
     access_token_expires = timedelta(minutes=float(120))
-    access_token = create_access_token(data={"id": code}, expires_delta=access_token_expires)
+    access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "Bearer"}
+
+# Get temp Code against user_id to implentent OAuth2 for Custom Gpt
+@app.get("/api/auth/temp-code", tags=["Authentication"])
+async def get_temp_code(user_id: UUID):
+    code = create_access_token( data={"id": user_id})
+    return {"code": code}
+
 
 
 @app.post("/api/auth/signup", response_model=UserOutput, tags=["Authentication"])

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 
 import { LoginSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
@@ -25,7 +24,6 @@ import { login } from "@/actions/login";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
-  // http://localhost:3000/auth/login?response_type=code&client_id=&redirect_uri=https://github.com/mjunaidca&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
 
   // Get all the query params
   const redirect_uri = searchParams.get("redirect_uri");
@@ -80,23 +78,6 @@ export const LoginForm = () => {
             setSuccess(data.success);
           }
         })
-      // login(values, callbackUrl)
-      //   .then((data) => {
-      //     if (data?.error) {
-      //       form.reset();
-      //       setError(data.error);
-      //     }
-
-      //     if (data?.success) {
-      //       form.reset();
-      //       setSuccess(data.success);
-      //     }
-
-      //     if (data?.twoFactor) {
-      //       setShowTwoFactor(true);
-      //     }
-      //   })
-      //   .catch(() => setError("Something went wrong"));
     });
   };
 
@@ -104,7 +85,7 @@ export const LoginForm = () => {
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
+      backButtonHref={redirect_uri ? `/auth/register${queryParams}` : "/auth/register"}
       showSocial
     >
       <Form {...form}>
