@@ -39,7 +39,7 @@ export const RegisterForm = () => {
   const scope = searchParams.get("scope");
   const state = searchParams.get("state");
 
-  const queryParams = `?redirect_uri=${redirect_uri}&client_id=${client_id}&response_type=${response_type}&scope=${scope}&state=${state}`
+  const queryParams = `?redirect_uri=${redirect_uri}` + `&state=${state}` + `&response_type=${response_type}` + `&client_id=${client_id}` + `&scope=${scope}` 
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -172,3 +172,10 @@ export const RegisterForm = () => {
     </CardWrapper>
   );
 };
+
+// ?response_type=code&client_id=&redirect_uri=https://github.com/mjunaidca&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
+
+// ?redirect_uri=https://github.com/mjunaidca&client_id=&response_type=code&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
+
+
+// redirect_uri=https://github.com/mjunaidca&client_id=&response_type=code&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b

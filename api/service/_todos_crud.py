@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
+
 from ..data._sqlalchemy_models import TODO
 from ..models._todo_crud import TODOBase, TODOResponse
 from ..data._todos_crud import create_todo_data, get_single_todo_data, get_all_todo_data, full_update_todo_data, partial_update_todo_data, delete_todo_data, TodoNotFoundError
@@ -31,25 +32,6 @@ def get_all_todos_service(db: Session, user_id: UUID, offset: int, per_page: int
         # Re-raise the exception to be handled at the endpoint level
         raise
 
-# def get_all_todos_service(db: Session, user_id: UUID) -> list[TODO]:
-#     """
-#     Get all TODO items from the database.
-
-#     Args:
-#         db (Session): The database session.
-
-#     Returns:
-#         list[TODO]: The list of TODO items.
-#     """
-#     try:
-#         return get_all_todo_data(db, user_id)
-#     except Exception as e:
-#         # Log the exception for debugging purposes
-#         print(f"Error getting all TODO items: {e}")
-#         # Re-raise the exception to be handled at the endpoint level
-#         raise
-
-
 # get a single TODO item
 def get_todo_by_id_service(todo_id: UUID, db: Session, user_id: UUID) -> TODO:
     try:
@@ -68,15 +50,6 @@ def get_todo_by_id_service(todo_id: UUID, db: Session, user_id: UUID) -> TODO:
 
 
 def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
-    # try:
-    #     db_todo = TODO(title=todo_data.title,
-    #                    description=todo_data.description, completed=todo_data.completed)
-    #     return create_todo_data(db_todo, db)
-    # except Exception as e:
-    #     # Log the exception for debugging purposes
-    #     print(f"Error creating TODO item: {e}")
-    #     # Re-raise the exception to be handled at the endpoint level
-    #     raise
     """
     Create a new TODO item.
 
@@ -103,13 +76,6 @@ def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO
 
 
 def full_update_todo_service(todo_id: UUID, todo_data: TODOBase, db: Session, user_id: UUID) -> TODO:
-    # try:
-    #     return full_update_todo_data(todo_id, todo_data, db)
-    # except Exception as e:
-    #     # Log the exception for debugging purposes
-    #     print(f"Error updating TODO item: {e}")
-    #     # Re-raise the exception to be handled at the endpoint level
-    #     raise
     """
     Update an existing TODO item.
 

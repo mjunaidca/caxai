@@ -49,7 +49,7 @@ export default auth((req) => {
   if (isAuthRoute) {
     if (isLoggedIn) {
       if (redirect_uri && state) {
-        const redirctNewUrl = DEFAULT_LOGIN_REDIRECT + `?redirect_uri=${redirect_uri}` + `&response_type=${response_type}` + `&client_id=${client_id}` + `&scope=${scope}` + `&state=${state}`
+        const redirctNewUrl = DEFAULT_LOGIN_REDIRECT + `?redirect_uri=${redirect_uri}`  + `&state=${state}` + `&response_type=${response_type}` + `&client_id=${client_id}` + `&scope=${scope}`
         return NextResponse.redirect(new URL(redirctNewUrl, nextUrl));
       } else {
         return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));

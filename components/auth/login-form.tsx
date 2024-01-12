@@ -32,7 +32,7 @@ export const LoginForm = () => {
   const scope = searchParams.get("scope");
   const state = searchParams.get("state");
 
-  const queryParams = `?redirect_uri=${redirect_uri}&client_id=${client_id}&response_type=${response_type}&scope=${scope}&state=${state}`
+  const queryParams = `?redirect_uri=${redirect_uri}` + `&state=${state}` + `&response_type=${response_type}` + `&client_id=${client_id}` + `&scope=${scope}`
 
   let callbackUrl: string | null = null
 

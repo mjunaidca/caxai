@@ -61,7 +61,7 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
         expire = datetime.utcnow() + expires_delta
 
     else:
-        expire = datetime.utcnow() + timedelta(minutes=5)
+        expire = datetime.utcnow() + timedelta(minutes=1)
 
     to_encode.update({"exp": expire})
 

@@ -31,7 +31,7 @@ const page = async ({
   const redirect_uri = searchParams.redirect_uri;
   const state = searchParams.state;
 
-  if (redirect_uri) {
+  if (redirect_uri && state) {
     const user_id = session.user.id;
     const tempCode = await getTempCode(user_id);
     redirect(redirect_uri + `?code=${tempCode.code}` + `&state=${state}`);

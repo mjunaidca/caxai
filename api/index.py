@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from uuid import UUID
 from datetime import timedelta
 
+# Now you can use relative imports
 from .data._db_config import get_db
 from .models._user_auth import RegisterUser, UserOutput, LoginResonse, Token
 from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token
@@ -19,10 +20,10 @@ app = FastAPI(
     title="Cal AI",
     description="A multi-user to-do application for efficient task management.",
     version="1.0.0",
-    terms_of_service="https://todo-auth-two.vercel.app/terms/",
+    terms_of_service="https://caxgpt.vercel.app/terms/",
     contact={
         "name": "Muhammad Junaid",
-        "url": "hhttps://todo-auth-two.vercel.app/contact/",
+        "url": "https://caxgpt.vercel.app/contact/",
         "email": "dp@x-force.example.com",
     },
     license_info={
@@ -31,16 +32,11 @@ app = FastAPI(
     },
     servers=[
         {
-            "url": "https://todo-auth-two.vercel.app",
+            "url": "https://caxgpt.vercel.app",
             "description": "Production server"
         },
     ]
 )
-
-# Hello World
-@app.get("/api", tags=["Welcome"])
-def read_root():
-    return {"Hello": "World"}
 
 # user_auth.py web layer routes
 @app.post("/api/auth/login", response_model=LoginResonse, tags=["Authentication"])
@@ -100,8 +96,6 @@ def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
 # Get a Single TODO item
-
-
 @app.get("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
     try:
