@@ -6,3 +6,5 @@ psycopg2-binary
 python-jose
 passlib
 python-multipart
+pytest-mock
+pytest-asyncio

@@ -8,7 +8,7 @@ import os
 from uuid import UUID
 from fastapi import HTTPException, status
 from typing import Union, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 _: bool = load_dotenv(find_dotenv())
 
@@ -73,9 +73,9 @@ def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = Non
         to_encode['id'] = str(to_encode['id'])
 
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(days=7)  # Set the expiration time for refresh tokens to 7 days
+        expire = datetime.now(timezone.utc) + timedelta(days=7)  # Set the expiration time for refresh tokens to 7 days
 
     to_encode.update({"exp": expire})
 

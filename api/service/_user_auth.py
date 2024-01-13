@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Annotated, Optional
 
 from sqlalchemy.orm import Session
@@ -74,10 +74,10 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
         to_encode['id'] = str(to_encode['id'])
 
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
 
     else:
-        expire = datetime.utcnow() + timedelta(minutes=1)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=1)
 
     to_encode.update({"exp": expire})
 

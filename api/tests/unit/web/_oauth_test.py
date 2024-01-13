@@ -5,7 +5,6 @@ from uuid import UUID
 import pytest
 from unittest.mock import patch, AsyncMock
 
-# *\ Import to Get SQLLCHEMY Base class for DB Schema Creation and Migrations
 # Determine the directory of the current file (env.py)
 current_dir = Path(__file__).resolve().parent
 
