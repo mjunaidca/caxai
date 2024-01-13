@@ -14,7 +14,7 @@ The FastAPI includes fully managed oAuth service to manage multi users efficient
 
 ## How it Works?
 
-The Custom GPT is conneced to FastAPI microservice and using oAuth Scheme for authntiation & authorization.
+The Custom GPT is connected to FastAPI microservice and using OAuth Authorization Code Flow Scheme for authentication & authorization.
 
 Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deployed on Vercel. 
 
@@ -36,6 +36,22 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 2. Frontend: Next.js14 for a responsive and dynamic user interface.
 3. Custom GPT: Chat or talks to manage all your tasks.
 
+### NextJS14
+- Use Server Actions for all User Actions
+- Middleware andCustom Authentication Flow Using FastAPI Backend OAuth service to implement user Authentication & Secure Routes
+- Streaming and Suspense to enchance UI
+- A custom todos management dashboard for all users
+- Shadcn UI and Tailwind Css for UI engineering
+
+### Cax TaskPal Custom GPT
+
+- The Custom Actions Are configured using OpenAI Spec
+- To Manage MultiUsers we are using OAuth Code Flow Authorization Scheme.
+- This Custom GPT can view all todos, add new tasks to list, update and delete them. 
+- User can manage todos themselves with nextjs14 web app.
+
+##### Fun Fact: You can even call Custom GPT from mobile app and perform all these todo crud operations.
+
 ### FastAPI Microservice
 - OAuth Protocol for User registration and authentication
 - CRUD operations for todos
@@ -52,22 +68,6 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
     - Integration Tests: 2
 
 `root api directoy: Contains the FastAPI backend microservice code, including API routes, models, and database configurations.`
-
-### NextJS14
-- Use Server Actions for all User Actions
-- Middleware andCustom Authentication Flow Using FastAPI Backend OAuth service to implement user Authentication & Secure Routes
-- Streaming and Suspense to enchance UI
-- A custom todos management dashboard for all users
-- Shadcn UI and Tailwind Css for UI engineering
-
-### Cax TaskPal Custom GPT
-
-- The Custom Actions Are configured using OpenAI Spec
-- To Manage MultiUsers we are using OAuth Code Flow Authorization Scheme.
-- This Custom GPT can view all todos, add new tasks to list, update and delete them. 
-- User can manage todos themselves with nextjs14 web app.
-
-##### Fun Fact: You can even call Custom GPT from mobile app and perform all these todo crud operations.
 
 Here's quick overview of how oAuth works with Custom GPT here:
 
