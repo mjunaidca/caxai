@@ -18,7 +18,12 @@ The Custom GPT is connected to FastAPI microservice and using OAuth Authorizatio
 
 Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deployed on Vercel. 
 
-### Custom GPT (Chat or Talk to Manage Tasks)
+###### Live Code WalkThrough And Demo:
+
+[<img src="https://img.youtube.com/vi/q_LwcflLUrQ/hqdefault.jpg" width="580" height="360"
+/>](https://www.youtube.com/embed/q_LwcflLUrQ)
+
+### Custom GPT Interface (Chat or Talk to Manage Tasks)
 
 ![Cax TaskPal GPT](./public/gpt.png)
 
