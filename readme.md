@@ -32,6 +32,10 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 
 ## Features And Tech Stack
 
+1. Backend: FastAPI for efficient and scalable backend microservoice.
+2. Frontend: Next.js14 for a responsive and dynamic user interface.
+3. Custom GPT: Chat or talks to manage all your tasks.
+
 ### FastAPI Microservice
 - OAuth Protocol for User registration and authentication
 - CRUD operations for todos
@@ -40,6 +44,9 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 - Configured Alembic to generate database schema and run migrations
 - SqlAlchemy ORM and Neon Serverless Postgress SQL Database 
 - Complete Unit, End to End and Integration tests using pytest and uttitest
+    - Unit Tests: 44
+    - End-to-End (E2E) Tests: 17
+    - Integration Tests: 2
 
 `root api directoy: Contains the FastAPI backend microservice code, including API routes, models, and database configurations.`
 
@@ -62,7 +69,6 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 ## Running the Project Locally 
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
 
 #### 1. Clone the project
 
@@ -99,10 +105,13 @@ a. Run `vercel link` and then add all env variables to vercel deplyment. Replace
 b. Finally run `vercel --prod` to deploy the project.
 
 
+## Testing
+This project includes 44 unit tests, 17 end-to-end tests, and 2 integration tests to ensure software quality and reliability.
+
 ## The Inspiration
 Inspired by the need for a personalized, AI-driven task management tool, this project is a journey towards creating an app that not only assists in managing daily tasks but also learns and adapts to the user's lifestyle and preferences.
 
-## Thoughts
+## Thoughts & Contributions
 
 Feel free to ask any questions or provide feedback. Contributions are also welcome!
 
