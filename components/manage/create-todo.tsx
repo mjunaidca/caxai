@@ -50,6 +50,7 @@ export default function CreateTodoForm() {
         description: "Request Failed, Try Again",
       });
       setIsSubmitting(false);
+      router.push("/dashboard/manage");
     } finally {
       setIsSubmitting(false);
     }

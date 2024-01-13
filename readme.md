@@ -1,4 +1,16 @@
-# CalX: Applied GenAI Multi User Todo App
+# CaX: Applied GenAI Multi User Todo GPT App
+
+Chat or Talk with TasksPal GPT on ChatGPT interface and review the updates on NextJS Web App.
+
+A. NextJS Web Interface
+
+https://caxgpt.vercel.app/
+
+B. ChatGPT Cax TasksPal GPT
+
+https://chat.openai.com/g/g-fC8sZoDCi-cax-taskpal
+
+The FastAPI includes fully managed oAuth service (code flow grant) to manage multi users efficiently.
 
 #### Built in NextJS14 Fastapi and deployed on Vercel
 

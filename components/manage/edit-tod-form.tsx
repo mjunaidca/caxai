@@ -58,6 +58,8 @@ export default function EditTodoForm({ todo }: { todo: TodoItem }) {
         description: "Request Failed, Try Again",
       });
       setIsSubmitting(false);
+
+      router.push("/dashboard/manage");
     } finally {
       setIsSubmitting(false);
     }
