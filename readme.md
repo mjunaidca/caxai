@@ -45,6 +45,9 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 - SqlAlchemy ORM and Neon Serverless Postgress SQL Database 
 - Complete Unit, End to End and Integration tests using pytest and uttitest
     - Unit Tests: 44
+        - web layer: 23
+        - service layer: 13
+        - data layer: 8
     - End-to-End (E2E) Tests: 17
     - Integration Tests: 2
 
