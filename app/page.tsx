@@ -19,10 +19,10 @@ export default async function Home() {
           "text-6xl font-semibold text-white drop-shadow-md",
           font.className,
         )}>
-          🔐 CAl AI
+          🔐 CAX
         </h1>
         <p className="text-white text-lg">
-          An End To End Multi User GenAI Project
+          Multi User Custom GPT Connected with NextJS14 Web App
         </p>
         <div className="flex w-full justify-center space-x-2">
           <LoginButton  asChild>

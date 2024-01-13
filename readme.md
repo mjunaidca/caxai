@@ -69,6 +69,11 @@ Backend Microservice and Frontend are developed in NextJS14 & Fastapi and deploy
 
 ##### Fun Fact: You can even call Custom GPT from mobile app and perform all these todo crud operations.
 
+Here's quick overview of how oAuth works with Custom GPT here:
+
+![FastAPI EndPoints](./public/oauth.png)
+
+
 ## Running the Project Locally 
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.

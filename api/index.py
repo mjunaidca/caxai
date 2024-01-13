@@ -16,8 +16,8 @@ from .service._todos_crud import create_todo_service, get_todo_by_id_service, ge
 from .utils._helpers import get_current_user_dep
 
 app = FastAPI(
-    title="Cal AI",
-    description="A multi-user to-do application for efficient task management.",
+    title="Cax",
+    description="A multi-user to-do microservice with NextJS14 web app and Multi User Custom GPT for efficient task management.",
     version="1.0.0",
     terms_of_service="https://caxgpt.vercel.app/terms/",
     contact={
