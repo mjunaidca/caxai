@@ -5,16 +5,15 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
 from uuid import UUID
-from datetime import timedelta
 
 # Now you can use relative imports
 from .data._db_config import get_db
 from .models._user_auth import RegisterUser, UserOutput, LoginResonse, GPTToken
-from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token
+from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token, gpt_tokens_service
 from .data._db_config import get_db
 from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
-from .utils._helpers import get_current_user_dep, create_refresh_token, validate_refresh_token, credentials_exception
+from .utils._helpers import get_current_user_dep
 
 app = FastAPI(
     title="Cal AI",
@@ -45,45 +44,13 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 # Get Access Token against user_id encoded temp token
 @app.post("/api/token", response_model=GPTToken, tags=["Authentication"])
-async def get_access_token(
+async def call_gpt_tokens_service(
     grant_type: str = Form(...),
     refresh_token: Optional[str] = Form(None),
     code: Optional[str] = Form(None)
 ):
+    return await gpt_tokens_service(grant_type, refresh_token, code)
     
-     # Token refresh flow
-    if grant_type == "refresh_token":
-        # Check if the refresh token is Present
-        if not refresh_token:
-            raise credentials_exception
-        # Validate the refresh token and client credentials
-        user_id = await validate_refresh_token(refresh_token)
-        if not user_id:
-            raise credentials_exception
-
-    # Initial token generation flow
-    elif grant_type == "authorization_code":
-        user_id = await get_current_user_dep(code)
-        if not user_id:
-            raise credentials_exception
-    else:
-        raise credentials_exception
-
-    # Generate access token
-    access_token_expires = timedelta(minutes=float(1))
-    access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
-
-    # Generate refresh token (you might want to set a longer expiry for this)
-    refresh_token_expires = timedelta(minutes=float(2))
-    rotated_refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
-
-    return {
-        "access_token": access_token,
-        "token_type": "Bearer",
-        "expires_in": int(access_token_expires.total_seconds()),
-        "refresh_token": rotated_refresh_token  # Include refresh token in the response
-    }
-
 
 # Get temp Code against user_id to implentent OAuth2 for Custom Gpt
 @app.get("/api/auth/temp-code", tags=["Authentication"])

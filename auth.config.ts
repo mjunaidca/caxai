@@ -25,8 +25,12 @@ export const authConfig = {
                 if (!user || user.status !== 200) return null;
 
                 const user_data = await user.json();
+
+                  // Include the token expiration time in seconds and milliseconds
+                const expiresInSeconds = user_data.expires_in; // Replace with the actual key in your response
+                const expiresInMilliseconds = expiresInSeconds * 1000;
     
-                return user_data
+                return {...user_data, accessTokenExpires: Date.now() + expiresInMilliseconds }
             }
     
             return null;

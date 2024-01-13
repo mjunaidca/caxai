@@ -34,3 +34,5 @@ class UserOutput(User):
 
 class LoginResonse(Token):
     user: UserOutput
+    expires_in: int
+    refresh_token: str

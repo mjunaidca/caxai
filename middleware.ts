@@ -14,26 +14,12 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   console.log("MIDDLEWARE.TS: PATHNAME", req.nextUrl.pathname);
   const { searchParams } = new URL(req.url);
-
-  console.log(
-    "middleware.ts: searchParams",
-    searchParams
-  );
   
-
   const redirect_uri = searchParams.get("redirect_uri");
   const response_type = searchParams.get("response_type");
   const client_id = searchParams.get("client_id");
   const scope = searchParams.get("scope");
   const state = searchParams.get("state");
-
-  console.log("middleware.ts REDIRECT_URI", redirect_uri); // 'https://chat.openai.com/aip/g-8a12b72cbad2ac62a38cbda91d8d14d3ad677cdf/oauth/callback'
-  
-
-  // if redirect_uri: 'https://chat.openai.com/aip/g-8a12b72cbad2ac62a38cbda91d8d14d3ad677cdf/oauth/callback'
-  // if User is LoggedIn then get access_token and refresh_token
-  // if User is not LoggedIn then redirect to login page to login
-  // We have to use oAuth protocol and send user back to the above redirect_uri with access_token
 
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
