@@ -72,9 +72,8 @@ export const RegisterForm = () => {
             title: "Signup Success",
             description: "Please Login To Continue",
             action: (
-              <Link href={`/auth/login${queryParams}`}><ToastAction altText="Login to Continue!">Login Now</ToastAction></Link> 
+              <Link href={redirect_uri ? `/auth/login${queryParams}` : "/auth/login"}><ToastAction altText="Login to Continue!">Login Now</ToastAction></Link> 
             ),
-
           })
         }
       });
@@ -172,10 +171,3 @@ export const RegisterForm = () => {
     </CardWrapper>
   );
 };
-
-// ?response_type=code&client_id=&redirect_uri=https://github.com/mjunaidca&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
-
-// ?redirect_uri=https://github.com/mjunaidca&client_id=&response_type=code&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
-
-
-// redirect_uri=https://github.com/mjunaidca&client_id=&response_type=code&scope=&state=38eeb985-b8ee-4dc0-b277-35e782c5499b
