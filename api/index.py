@@ -171,7 +171,7 @@ def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID =
 
 
 # Create a new TODO item
-@app.post("/api/todos", response_model=TODOResponse, tags=["TODO Crud"])
+@app.post("/api/todos", response_model=TODOResponse, tags=["TODO Crud"], status_code=201)
 def create_todo(todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
     """
     Create a new TODO item

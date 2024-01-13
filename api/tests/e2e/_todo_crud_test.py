@@ -12,7 +12,7 @@ def bearer():
         "password": "junaid"
     }
     response = requests.post(
-        "http://127.0.0.1:8000/api/auth/login",
+        "http://127.0.0.1:8000/api/oauth/login",
         data=login_data  # Send as form data
     )
     assert response.status_code == 200
@@ -43,7 +43,7 @@ def test_get_todos_with_valid_token(bearer):
         headers={"Authorization": f"Bearer {bearer}"}
     )
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json(), dict)
 
 
 def test_create_todo(bearer):
@@ -56,7 +56,7 @@ def test_create_todo(bearer):
             "completed": False
         }
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json()["title"] == "Test TODO"
     assert response.json()["description"] == "Test TODO Description"
     assert response.json()["completed"] == False

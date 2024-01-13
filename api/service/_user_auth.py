@@ -234,7 +234,7 @@ async def gpt_tokens_service(grant_type: str = Form(...), refresh_token: Optiona
 
     return {
         "access_token": access_token,
-        "token_type": "Bearer",
+        "token_type": "bearer",
         "expires_in": int(access_token_expires.total_seconds()),
         "refresh_token": rotated_refresh_token  # Include refresh token in the response
     }

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import mapped_column, DeclarativeBase, Mapped, relationship
-from sqlalchemy import String, Boolean, UUID, DateTime, Text, func, ForeignKey
+from sqlalchemy import String, Boolean, UUID, DateTime, Text, ForeignKey
 
 import datetime
 import uuid

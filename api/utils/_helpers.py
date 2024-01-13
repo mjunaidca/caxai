@@ -12,8 +12,6 @@ from datetime import datetime, timedelta
 
 _: bool = load_dotenv(find_dotenv())
 
-# to get a string like this run:
-# openssl rand -hex 32
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get(
@@ -25,7 +23,6 @@ pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
-
 
 def get_password_hash(password):
     return pwd_context.hash(password)
@@ -69,7 +66,6 @@ async def validate_refresh_token(refresh_token: str) -> Union[str, None]:
     except JWTError:
         return None
     
-
 def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()
     # Convert UUID to string if it's present in the data
@@ -92,7 +88,6 @@ def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = Non
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
-
 
 # Create a custom credentials exception
 credentials_exception = HTTPException(

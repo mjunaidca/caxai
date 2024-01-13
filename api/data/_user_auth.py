@@ -1,15 +1,14 @@
+from typing import Union
 from sqlalchemy.orm import Session
 
-from ..models._user_auth import  RegisterUser
 from ._sqlalchemy_models import USER
-
+from ..models._user_auth import  RegisterUser
 from ..utils._helpers import get_password_hash
-from typing import Union
+
 class InvalidUserException(Exception):
     """
     Exception raised when a user is not found in the database.
     """
-
     def __init__(self, status_code: int, detail: str):
         self.status_code = status_code
         self.detail = detail

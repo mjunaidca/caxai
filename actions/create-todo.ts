@@ -44,7 +44,7 @@ export async function createTodoAction(values: z.infer<typeof TodoSchema>) {
 
   console.log("create_todo_STATUS", create_todo.status, create_todo.statusText);
 
-  if (create_todo.status !== 200) {
+  if (create_todo.status !== 201) {
     return { error: "Failed to Create Todo" };
   }
 
