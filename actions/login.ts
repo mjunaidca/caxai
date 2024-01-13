@@ -20,7 +20,7 @@ export const login = async (
     request_form_data.append("username", username);
     request_form_data.append("password", password);
 
-    const user = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
+    const user = await fetch(`${process.env.BACKEND_URL}/api/oauth/login`, {
       method: "POST",
       body: request_form_data,
       cache: "no-store",

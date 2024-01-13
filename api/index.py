@@ -39,31 +39,73 @@ app = FastAPI(
 )
 
 # user_auth.py web layer routes
-@app.post("/api/auth/login", response_model=LoginResonse, tags=["Authentication"])
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+@app.post("/api/oauth/login", response_model=LoginResonse, tags=["OAuth2 Authentication"])
+async def login_authorization(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+    """
+    Authorization URL for OAuth2
+
+    Args:
+        form_data (Annotated[OAuth2PasswordRequestForm, Depends()]): Form Data
+        db (Session, optional): Dependency Injection
+
+    Returns:
+        LoginResonse: Login Response
+    """
     return await service_login_for_access_token(form_data, db)
 
-# Get Access Token against user_id encoded temp token
-@app.post("/api/token", response_model=GPTToken, tags=["Authentication"])
-async def call_gpt_tokens_service(
+@app.post("/api/oauth/token", response_model=GPTToken, tags=["OAuth2 Authentication"])
+async def tokens_manager_oauth_codeflow(
     grant_type: str = Form(...),
     refresh_token: Optional[str] = Form(None),
     code: Optional[str] = Form(None)
 ):
+    """
+    Token URl For OAuth Code Grant Flow
+
+    Args:
+        grant_type (str): Grant Type
+        code (Optional[str], optional)
+        refresh_token (Optional[str], optional)
+
+    Returns:
+        access_token (str)
+        token_type (str)
+        expires_in (int)
+        refresh_token (str)
+    """
     return await gpt_tokens_service(grant_type, refresh_token, code)
     
 
 # Get temp Code against user_id to implentent OAuth2 for Custom Gpt
-@app.get("/api/auth/temp-code", tags=["Authentication"])
+@app.get("/api/oauth/temp-code", tags=["OAuth2 Authentication"])
 async def get_temp_code(user_id: UUID):
+    """
+    Get Temp Code against user_id to implentent OAuth2 for Custom Gpt
+
+    Args:
+        user_id (UUID): User ID
+
+    Returns:
+        code (str): Temp Code
+    """
     code = create_access_token(data={"id": user_id})
     return {"code": code}
 
 
-@app.post("/api/auth/signup", response_model=UserOutput, tags=["Authentication"])
+@app.post("/api/oauth/signup", response_model=UserOutput, tags=["OAuth2 Authentication"])
 async def signup_users(
     user_data: RegisterUser, db: Session = Depends(get_db)
 ):
+    """
+    Signup Users
+
+    Args:
+        user_data (RegisterUser): User Data
+        db (Session, optional):  Dependency Injection
+
+    Returns:
+        UserOutput: User Output
+    """
     return await service_signup_users(user_data, db)
 
 #  todos_crud.py web layer routes
@@ -72,6 +114,19 @@ async def signup_users(
 @app.get("/api/todos", response_model=PaginatedTodos, tags=["TODO Crud"])
 def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep), page: int = Query(1, description="Page number", ge=1),
               per_page: int = Query(10, description="Items per page", ge=1, le=100)):
+    """
+    Get ALL TODOS
+
+    Args:
+        db (Session, optional):  Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+        page (int, optional): Page number. Defaults to Query(1).
+        per_page (int, optional): Items per page. Defaults to Query(10).
+
+    Returns:
+
+        PaginatedTodos: Paginated Todos
+    """
     try:
         # Calculate the offset to skip the appropriate number of items
         offset = (page - 1) * per_page
@@ -93,6 +148,18 @@ def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current
 # Get a Single TODO item
 @app.get("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Get a Single TODO item
+
+    Args:
+        todo_id (UUID): TODO ID
+        db (Session, optional):  Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+
+    Returns:
+        TODOResponse: TODO Response
+    
+    """
     try:
         return get_todo_by_id_service(todo_id, db, user_id)
     except HTTPException as e:
@@ -106,6 +173,17 @@ def get_todo_by_id(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID =
 # Create a new TODO item
 @app.post("/api/todos", response_model=TODOResponse, tags=["TODO Crud"])
 def create_todo(todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Create a new TODO item
+
+    Args:
+        todo (TODOBase): TODO Data
+        db (Session, optional):  Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+
+    Returns:
+        TODOResponse: TODO Response
+    """
     try:
         return create_todo_service(todo, db, user_id)
     except Exception as e:
@@ -115,6 +193,18 @@ def create_todo(todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = D
 # Update a Single TODO item Completly
 @app.put("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Update a Single TODO item Completly
+
+    Args:
+        todo_id (UUID): TODO ID
+        updated_todo (TODOBase): Updated TODO Data
+        db (Session, optional):  Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+
+    Returns:
+        TODOResponse: TODO Response
+    """
     try:
         return full_update_todo_service(todo_id, updated_todo, db, user_id)
     except Exception as e:
@@ -125,6 +215,18 @@ def update_todo(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get
 # Update a Single TODO item partially
 @app.patch("/api/todos/{todo_id}", response_model=TODOResponse, tags=["TODO Crud"])
 def update_todo_partial(todo_id: UUID, updated_todo: TODOBase, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Partially Update a Single TODO item
+
+    Args:
+        todo_id (UUID): TODO ID
+        updated_todo (TODOBase): Updated TODO Data
+        db (Session, optional): Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+
+    Returns:
+        TODOResponse: TODO Response
+    """
     try:
         return partial_update_todo_service(todo_id, updated_todo, db, user_id)
     except Exception as e:
@@ -135,6 +237,17 @@ def update_todo_partial(todo_id: UUID, updated_todo: TODOBase, db: Session = Dep
 # DELETE a single TODO item
 @app.delete("/api/todos/{todo_id}", tags=["TODO Crud"])
 def delete_todo(todo_id: UUID, db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Delete a Single TODO item
+
+    Args:
+        todo_id (UUID): TODO ID
+        db (Session, optional):  Dependency Injection
+        user_id (UUID, optional):  Dependency Injection
+
+    Returns:
+        null
+    """
     try:
         return delete_todo_data(todo_id, db, user_id)
     except Exception as e:
