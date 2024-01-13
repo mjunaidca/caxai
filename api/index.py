@@ -34,7 +34,8 @@ app = FastAPI(
             "url": "https://caxgpt.vercel.app",
             "description": "Production server"
         },
-    ]
+    ],
+    docs_url="/api/docs"
 )
 
 # user_auth.py web layer routes

@@ -8,9 +8,12 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { TodoSchema } from "@/schemas/todo";
 import { createTodoAction } from "@/actions/create-todo";
+import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function CreateTodoForm() {
   const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof TodoSchema>>({
     resolver: zodResolver(TodoSchema),
     defaultValues: {
@@ -19,12 +22,36 @@ export default function CreateTodoForm() {
       completed: false,
     },
   });
+  const { toast } = useToast();
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof TodoSchema>) => {
     try {
-      await createTodoAction(values);
+      setIsSubmitting(true);
+      const data = await createTodoAction(values);
+      if (data.error) {
+        setSubmitError(data.error);
+        throw new Error(data.error);
+      }
+
+      if (data.success) {
+        setSubmitError("");
+        toast({
+          title: "Todo Updated",
+          description: "Todo Updated Successfully",
+        });
+
+        router.push("/dashboard/manage");
+      }
     } catch (error) {
       setSubmitError("Failed to update todo");
+      toast({
+        title: "Failed to Create Todo",
+        description: "Request Failed, Try Again",
+      });
+      setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -60,9 +87,7 @@ export default function CreateTodoForm() {
 
       {/* Completed Status */}
       <fieldset className="mb-4">
-        <legend className="block mb-2 text-sm font-medium">
-         Todo status
-        </legend>
+        <legend className="block mb-2 text-sm font-medium">Todo status</legend>
         <label className="flex items-center gap-2">
           <input
             {...form.register("completed")}
@@ -82,7 +107,9 @@ export default function CreateTodoForm() {
         >
           Cancel
         </Link>
-        <Button type="submit">Add Todo</Button>
+        <Button disabled={isSubmitting} type="submit">
+          Add Todo
+        </Button>
       </div>
     </form>
   );

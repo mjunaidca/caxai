@@ -24,14 +24,18 @@ const page = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const session = (await auth()) as CustomSession;
-  if (!session || !session.user) redirect("/");
 
-    // Get all the query params
+  const session = await auth();
+  if (!session) {
+    console.log("[session] No cookies. Redirecting...");
+    redirect("/auth/login");
+  }
+  
+  
   const redirect_uri = searchParams.redirect_uri;
   const state = searchParams.state;
 
-  if (redirect_uri && state) {
+  if (redirect_uri && state && session) {
     const user_id = session.user.id;
     const tempCode = await getTempCode(user_id);
     redirect(redirect_uri + `?code=${tempCode.code}` + `&state=${state}`);

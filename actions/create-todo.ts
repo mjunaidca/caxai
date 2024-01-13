@@ -16,15 +16,18 @@ export async function createTodoAction(values: z.infer<typeof TodoSchema>) {
 
   console.log("updateTodoAction", title, completed, description);
 
-  const session = (await auth()) as CustomSession;
-  if (!session || !session.user) redirect("/");
+  const session = await auth();
+  if (!session) {
+    console.log("[session] No cookies. Redirecting...");
+    redirect("/auth/login");
+  }
 
-  const accessToken = session.user.accessToken;
+  const accessToken = session.access_token;
 
   console.log("accessToken", accessToken);
 
   // Get All Todos
-  const update_todo = await fetch(`${process.env.BACKEND_URL}/api/todos`, {
+  const create_todo = await fetch(`${process.env.BACKEND_URL}/api/todos`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -35,16 +38,17 @@ export async function createTodoAction(values: z.infer<typeof TodoSchema>) {
       description: description,
       completed: completed,
     }),
-    cache: "force-cache",
+    cache: "no-store",
     next: { tags: ["get_todos"] },
   });
 
-  console.log("UPDATE_TODO_STATUS", update_todo.status, update_todo.statusText);
+  console.log("create_todo_STATUS", create_todo.status, create_todo.statusText);
 
-  if (update_todo.status === 200) {
-    revalidateTag("get_todos");
-    redirect("/dashboard/manage");
+  if (create_todo.status !== 200) {
+    return { error: "Failed to Create Todo" };
   }
 
-  return { message: "Failed to Create Todo" };
+  revalidateTag("get_todos");
+  // redirect("/dashboard/manage");
+  return { success: "Too Created!" };
 }

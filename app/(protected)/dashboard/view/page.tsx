@@ -1,6 +1,7 @@
 import { fetchAllTodos } from '@/actions/fetch_todos';
 import TodosViewTable from '@/components/dashboard/todos-view-table';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export default async function Page() {
 
     // Check if 'all_todos' is of type 'TodoList'
     if (!Array.isArray(all_todos)) {
-        return <div>Failed to Load Todos</div>;
+      notFound();
     }
 
   return (

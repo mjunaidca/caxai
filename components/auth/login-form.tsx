@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoginSchema } from "@/schemas";
@@ -21,6 +21,10 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
+import Link from "next/link";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -45,10 +49,11 @@ export const LoginForm = () => {
       ? "Email already in use with different provider!"
       : "";
 
-  const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const router = useRouter()
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -60,22 +65,34 @@ export const LoginForm = () => {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
-    setSuccess("");
-
-    console.log("values", values);
-    
+    setSuccess("");    
 
     startTransition(() => {
-      login(values, callbackUrl)
+      login(values)
         .then((data) => {
           if (data?.error) {
-            form.reset();
             setError(data.error);
+            toast({
+              title: "Login Failed",
+              description: data.message ? data.message : "Request Failed, Try Again",
+              action: (
+                <ToastAction altText="Dismiss">Dismiss</ToastAction>
+               )
+            })
+            form.reset();
           }
 
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
+            toast({
+              title: "Login Success",
+              description: data.message ? data.message : "Welcome to Cax AI",
+              action: (
+               <ToastAction altText="Close">Close</ToastAction>
+              ),
+            })
+            router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT );
           }
         })
     });
@@ -91,26 +108,6 @@ export const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            {showTwoFactor && (
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Two Factor Code</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="123456"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            {!showTwoFactor && (
               <>
                 <FormField
                   control={form.control}
@@ -157,12 +154,11 @@ export const LoginForm = () => {
                   )}
                 />
               </>
-            )}
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success}  />
           <Button disabled={isPending} type="submit" className="w-full">
-            {showTwoFactor ? "Confirm" : "Login"}
+            {"Login"}
           </Button>
         </form>
       </Form>

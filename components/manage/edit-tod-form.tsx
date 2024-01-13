@@ -8,10 +8,12 @@ import { useEffect, useState } from "react";
 import { updateTodoAction } from "@/actions/update-todo";
 import { Button } from "../ui/button";
 import { TodoSchema } from "@/schemas/todo";
-import { redirect } from "next/navigation";
+import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function EditTodoForm({ todo }: { todo: TodoItem }) {
   const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof TodoSchema>>({
     resolver: zodResolver(TodoSchema),
     defaultValues: {
@@ -20,7 +22,8 @@ export default function EditTodoForm({ todo }: { todo: TodoItem }) {
       completed: todo.completed,
     },
   });
-
+  const { toast } = useToast();
+  const router = useRouter();
   useEffect(() => {
     form.reset({
       title: todo.title,
@@ -31,9 +34,32 @@ export default function EditTodoForm({ todo }: { todo: TodoItem }) {
 
   const onSubmit = async (values: z.infer<typeof TodoSchema>) => {
     try {
-    await updateTodoAction(todo.id, values);
+      setIsSubmitting(true);
+      const data = await updateTodoAction(todo.id, values);
+      if (data.error) {
+        setSubmitError(data.error);
+        throw new Error(data.error);
+      }
+
+      if (data.success) {
+        setSubmitError("");
+        toast({
+          title: "Todo Updated",
+          description: "Todo Updated Successfully",
+        });
+
+        router.push("/dashboard/manage");
+      }
+
     } catch (error) {
       setSubmitError("Failed to update todo");
+      toast({
+        title: "Failed to Update Todo",
+        description: "Request Failed, Try Again",
+      });
+      setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -91,7 +117,9 @@ export default function EditTodoForm({ todo }: { todo: TodoItem }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Edit Todo</Button>
+        <Button disabled={isSubmitting} type="submit">
+          Edit Todo
+        </Button>
       </div>
     </form>
   );

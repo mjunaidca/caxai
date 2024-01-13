@@ -21,40 +21,39 @@ export async function updateTodoAction(
 
   console.log("updateTodoAction", title, completed, description);
 
-  const session = (await auth()) as CustomSession;
-  if (!session || !session.user) redirect("/");
-
-  const accessToken = session.user.accessToken;
+  const session = await auth();
+  if (!session) {
+    console.log("[session] No cookies. Redirecting...");
+    redirect("/auth/login");
+  }
+  const accessToken = session.access_token;
 
   // Get All Todos
-    const update_todo = await fetch(
-      `${process.env.BACKEND_URL}/api/todos/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
-        body: JSON.stringify({
-          title: title,
-          description: description,
-          completed: completed,
-        }),
-        cache: "force-cache",
-        next: { tags: ["get_todos"] },
-      }
-    );
-
-    console.log(
-      "UPDATE_TODO_STATUS",
-      update_todo.status,
-      update_todo.statusText
-    );
-
-    if (update_todo.status === 200) {
-      revalidateTag("get_todos");
-      redirect("/dashboard/manage");
+  const update_todo = await fetch(
+    `${process.env.BACKEND_URL}/api/todos/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        completed: completed,
+      }),
+      cache: "no-store",
+      next: { tags: ["get_todos"] },
     }
+  );
 
-    return { message: "Failed to Update Todo" };
+  console.log("UPDATE_TODO_STATUS", update_todo.status, update_todo.statusText);
+
+  if (update_todo.status !== 200) {
+    return { error: "Failed to Update Todo" };
+  }
+
+  revalidateTag("get_todos");
+  // redirect("/dashboard/manage");
+  return { success: "Todo Updated!" };
 }

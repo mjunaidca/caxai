@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const navigation = [
   { id: 1, title: "Home", url: "/" },
@@ -8,6 +10,12 @@ const navigation = [
 
 
 const AuthLayout = ({ children}: { children: React.ReactNode}) => {
+  // const cookies_user_data = cookies().has("user_data");
+
+  // if (cookies_user_data ) {
+  //   console.log("[auth] No user data in cookies. Redirecting to login.");
+  //   redirect("/dashboard");
+  // }
 
 
   return (

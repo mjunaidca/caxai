@@ -1,12 +1,14 @@
-import { auth } from '@/auth';
+"use server"
+import { auth } from "@/auth";
 import { redirect } from 'next/navigation';
 
 export async function fetchAllTodos() {
-    const session = await auth() as CustomSession; 
-    if (!session || !session.user) redirect('/');
-
-    const accessToken = (session.user.accessToken)
-
+    const session = await auth(); 
+    if (!session) {
+        console.log("[session] No cookies. Redirecting...");
+        redirect('/auth/login')
+    }
+    const accessToken = session.access_token    
     const page = 1;
     const perPage = 10;
 
@@ -15,9 +17,11 @@ export async function fetchAllTodos() {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },
-        cache: 'force-cache',
+        cache: 'no-store',
         next: { tags: ['get_todos'] }
     });
+
+    
 
     if (!all_todos_request.ok) {
         return 'Failes to Load Todos'

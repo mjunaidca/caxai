@@ -2,17 +2,22 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 export async function fetchTodoById(id: string) {
-    const session = await auth() as CustomSession; 
-    if (!session || !session.user) redirect('/');
+    const session = await auth(); 
 
-    const accessToken = (session.user.accessToken)
+    if (!session) {
+        console.log("[session] No cookies. Redirecting...");
+        redirect('/auth/login')
+    }
+
+    const accessToken = (session.access_token)
+    
 
     const todo_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
         },
-        cache: 'force-cache'
+        cache: 'no-store'
     });
 
     console.log('FETCH_TODO_STATUS', todo_request.status, todo_request.statusText);

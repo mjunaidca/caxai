@@ -1,6 +1,7 @@
 "use client";
 
 import { logout } from "@/actions/logout";
+import { useRouter } from "next/navigation";
 
 interface LogoutButtonProps {
   children?: React.ReactNode;
@@ -9,8 +10,11 @@ interface LogoutButtonProps {
 export const LogoutButton = ({
   children
 }: LogoutButtonProps) => {
+
+  const router = useRouter();
   const onClick = () => {
     logout();
+    router.push("/");
   };
 
   return (

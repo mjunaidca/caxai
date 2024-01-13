@@ -28,6 +28,7 @@ export function UpdateTodo({ id }: { id: string }) {
 
 export function DeleteTodo({ id }: { id: string }) {
   const deleteTodoeWithId = deleteTodo.bind(null, id);
+  
   revalidateTag('get_todos')
 
   return (
