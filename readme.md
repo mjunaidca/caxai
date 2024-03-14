@@ -4,7 +4,7 @@ Chat or Talk with TasksPal GPT on ChatGPT interface and review the updates live 
 
 A. NextJS Web Interface
 
-https://caxgpt.vercel.app/
+https://cax.vercel.app/
 
 B. ChatGPT Cax TasksPal GPT
 
