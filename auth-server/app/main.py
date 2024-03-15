@@ -8,7 +8,7 @@ from uuid import UUID
 from contextlib import asynccontextmanager
 
 # Now you can use relative imports
-from app.config_db import get_db, create_db_and_tables
+from app.core.config_db import get_db, create_db_and_tables
 from app.models import RegisterUser, UserOutput, LoginResonse, GPTToken
 from app.service import service_signup_users, service_login_for_access_token, create_access_token, gpt_tokens_service
 

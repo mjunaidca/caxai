@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import Union
 
 from app.models import RegisterUser, USER
-from app.utils import get_password_hash
+from app.core.utils import get_password_hash
 
 
 class InvalidUserException(Exception):

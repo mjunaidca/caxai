@@ -9,11 +9,11 @@ from typing import Union
 from jose import JWTError, jwt
 from uuid import UUID
 
-from app import settings
+from app.core import settings
 
 from app.models import TokenData, RegisterUser
-from app.config_db import get_db
-from app.utils import verify_password, credentials_exception, create_refresh_token, validate_refresh_token, get_current_user_dep
+from app.core.config_db import get_db
+from app.core.utils import verify_password, credentials_exception, create_refresh_token, validate_refresh_token, get_current_user_dep
 from app.crud import get_user, db_signup_users, InvalidUserException
 
 # to get a string like this run:

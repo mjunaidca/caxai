@@ -9,7 +9,7 @@ from uuid import UUID
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from app import settings
+from app.core import settings
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
