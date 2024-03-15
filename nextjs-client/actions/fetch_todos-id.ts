@@ -12,7 +12,7 @@ export async function fetchTodoById(id: string) {
     const accessToken = (session.access_token)
     
 
-    const todo_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}`, {
+    const todo_request = await fetch(`${process.env.BACKEND_TODO_SERVER_URL}/api/todos/${id}`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",

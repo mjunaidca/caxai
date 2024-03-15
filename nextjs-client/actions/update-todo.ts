@@ -30,7 +30,7 @@ export async function updateTodoAction(
 
   // Get All Todos
   const update_todo = await fetch(
-    `${process.env.BACKEND_URL}/api/todos/${id}`,
+    `${process.env.BACKEND_TODO_SERVER_URL}/api/todos/${id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

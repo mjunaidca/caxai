@@ -50,7 +50,7 @@ export default async function middleware(req: NextRequest) {
         formData.append("grant_type", "refresh_token");
 
         const token_response = await fetch(
-          `${process.env.BACKEND_URL}/api/token`,
+          `${process.env.BACKEND_AUTH_SERVER_URL}/api/token`,
           {
             method: "POST",
             body: formData,

@@ -13,7 +13,7 @@ export async function fetchAllTodos() {
     const perPage = 10;
 
     // Get All Todos
-    const all_todos_request = await fetch( `${process.env.BACKEND_URL}/api/todos/?page=${page}&per_page=${perPage}`, {
+    const all_todos_request = await fetch( `${process.env.BACKEND_TODO_SERVER_URL}/api/todos/?page=${page}&per_page=${perPage}`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },

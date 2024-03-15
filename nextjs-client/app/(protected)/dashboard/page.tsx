@@ -12,7 +12,7 @@ type TempCode = {
 // Function to get temporary code
 async function getTempCode(user_id: string) {
   const res = await fetch(
-    `${process.env.BACKEND_URL}/api/oauth/temp-code?user_id=${user_id}`,
+    `${process.env.BACKEND_AUTH_SERVER_URL}/api/oauth/temp-code?user_id=${user_id}`,
     {
       cache: "no-store",
     }

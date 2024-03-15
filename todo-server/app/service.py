@@ -63,10 +63,10 @@ def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO
     """
     try:
         # Add user_id to the todo_data
-        todo_data.user_id = user_id
 
         # Validate the data
         db_todo = TODO.model_validate(todo_data)
+        db_todo.user_id = user_id
         return create_todo_data(db_todo, db)
     except SQLAlchemyError as e:
         print(f"Database error when creating TODO item: {e}")

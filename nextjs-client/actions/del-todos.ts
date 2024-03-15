@@ -14,7 +14,7 @@ export async function deleteTodo(id: string) {
 
     const accessToken = (session.access_token)
 
-    const all_todos_request = await fetch(`${process.env.BACKEND_URL}/api/todos/${id}`, {
+    const all_todos_request = await fetch(`${process.env.BACKEND_TODO_SERVER_URL}/api/todos/${id}`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
             },
