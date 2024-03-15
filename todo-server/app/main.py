@@ -9,6 +9,7 @@ import httpx
 
 # Now you can use relative imports
 from app.core.config_db import get_db, create_db_and_tables
+from app.core.settings import AUTH_SERVER_URL
 from app.models import TODOBase, TODOResponse, PaginatedTodos
 from app.service import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
 
@@ -45,11 +46,10 @@ app = FastAPI(
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Call http://localhost:8080/api/users/me, in header add Bearar token and get str user_id owith 200 or an error message in JSON - use httpx 
-
+# Call Auth Server and get str user_id owith 200 or an error message in JSON - use httpx 
 def get_current_user_dep(token: Annotated[str | None, Depends(oauth2_scheme)]):
     print("get_user_id token", token)
-    url = "http://localhost:8080/api/users/me"
+    url = f"{AUTH_SERVER_URL}/api/users/me"
     headers = {"Authorization": f"Bearer {token}"}
 
     response = httpx.get(url, headers=headers)

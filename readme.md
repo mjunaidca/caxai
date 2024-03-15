@@ -1,5 +1,11 @@
 # CaX: Applied GenAI Multi User Todo GPT App
 
+Implementation of Microservices GenUI Architecture. The Current Microservices are:
+
+- auth-server: Auth Server to manage Authentication & Authorization
+- todo-server: Simple ToDo Server to authenticate using auth-server & perform TODOs Crud.
+- nextjs-client: Conversational GenUI & TODOs Manager platform for you.
+
 Chat or Talk with TasksPal GPT on ChatGPT interface and review the updates live NextJS Web App :D
 
 A. NextJS Web Interface

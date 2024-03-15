@@ -6,12 +6,15 @@ services:
     build:
       context: ./todo-server
       dockerfile: Dockerfile-dev
-    env_file: ".env"
+    env_file: "./todo-server/.env"
     container_name: todo-server
     ports:
       - "8000:8000"
     environment:
       - NODE_ENV=development
+      - DB_URL=${DB_URL}
+      - TEST_DB_URL=${TEST_DB_URL}
+      - AUTH_SERVER_URL=${AUTH_SERVER_URL}
     volumes:
       - ./todo-server:/app # Mount the host code directory into the container
     depends_on:
@@ -22,7 +25,7 @@ services:
     build:
       context: ./auth-server
       dockerfile: Dockerfile-dev
-    env_file: "./.env"
+    env_file: "./auth-server/.env"
     container_name: auth-server
     ports:
       - "8080:8080"
@@ -30,4 +33,29 @@ services:
       - ./auth-server:/app # Mount the host code directory into the container
     environment:
       - NODE_ENV=development
+      - DB_URL=${DB_URL}
+      - TEST_DB_URL=${TEST_DB_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - REFRESH_TOKEN_EXPIRE_MINUTES=${REFRESH_TOKEN_EXPIRE_MINUTES}
+
+  nextjs-client:
+    image: nextjs-client
+    build:
+      context: ./nextjs-client
+      dockerfile: Dockerfile-dev
+    env_file: "./nextjs-client/.env"
+    container_name: nextjs-client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nextjs-client:/app # Mount the host code directory into the container
+    environment:
+      - NODE_ENV=development
+      - BACKEND_AUTH_SERVER_URL=${BACKEND_AUTH_SERVER_URL}
+      - BACKEND_TODO_SERVER_URL=${BACKEND_TODO_SERVER_URL}
+    depends_on:
+      - todo-server
+      - auth-server
 
