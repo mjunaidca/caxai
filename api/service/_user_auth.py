@@ -8,30 +8,19 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union
 from jose import JWTError, jwt
 from uuid import UUID
-from dotenv import load_dotenv, find_dotenv
-import os
+from api import settings
 
 from ..models._user_auth import TokenData, RegisterUser
 from ..data._db_config import get_db
 from ..utils._helpers import verify_password, credentials_exception, create_refresh_token, validate_refresh_token, get_current_user_dep
 from ..data._user_auth import get_user, db_signup_users, InvalidUserException
 
-_: bool = load_dotenv(find_dotenv())
-
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = os.environ.get("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get(
-    "ACCESS_TOKEN_EXPIRE_MINUTES", "30")
-REFRESH_TOKEN_EXPIRE_MINUTES = os.environ.get(
-    "REFRESH_TOKEN_EXPIRE_MINUTES", "60")
-
-if not SECRET_KEY:
-    raise ValueError("No SECRET_KEY set for authentication")
-
-if not ALGORITHM:
-    raise ValueError("No ALGORITHM set for authentication")
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = float(str(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+REFRESH_TOKEN_EXPIRE_MINUTES = float(str(settings.REFRESH_TOKEN_EXPIRE_MINUTES))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -51,6 +40,7 @@ def authenticate_user(db, username: str, password: str):
     user = get_user(db, username)
     if not user:
         return False
+    print("\n ------------- \n user.hashed_password", user.hashed_password)
     if not verify_password(password, user.hashed_password):
         return False
     return user
@@ -81,13 +71,8 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 
     to_encode.update({"exp": expire})
 
-    if not isinstance(SECRET_KEY, str):
-        raise ValueError("SECRET_KEY must be a string")
-
-    if not isinstance(ALGORITHM, str):
-        raise ValueError("ALGORITHM must be a string")
-
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, str(
+        SECRET_KEY), algorithm=str(ALGORITHM))
 
     return encoded_jwt
 
@@ -113,13 +98,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Se
     )
     try:
 
-        if not isinstance(SECRET_KEY, str):
-            raise ValueError("SECRET_KEY must be a string")
-
-        if not isinstance(ALGORITHM, str):
-            raise ValueError("ALGORITHM must be a string")
-
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, str(SECRET_KEY),
+                             algorithms=[str(ALGORITHM)])
         username: Union[str, None] = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -153,14 +133,14 @@ async def service_login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(
-        minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
+        minutes=float(str(ACCESS_TOKEN_EXPIRE_MINUTES)))
     access_token = create_access_token(
         data={"sub": user.username, "id": user.id}, expires_delta=access_token_expires
     )
 
     # Generate refresh token (you might want to set a longer expiry for this)
     refresh_token_expires = timedelta(
-        minutes=float(REFRESH_TOKEN_EXPIRE_MINUTES))
+        minutes=float(str(REFRESH_TOKEN_EXPIRE_MINUTES)))
     refresh_token = create_refresh_token(
         data={"sub": user.username, "id": user.id}, expires_delta=refresh_token_expires)
 
@@ -220,7 +200,9 @@ async def gpt_tokens_service(grant_type: str = Form(...), refresh_token: Optiona
 
     # Initial token generation flow
     elif grant_type == "authorization_code":
-        user_id = await get_current_user_dep(code)
+        if code is None:
+            raise credentials_exception
+        user_id = await get_current_user_dep(code) 
         if not user_id:
             raise credentials_exception
     else:

@@ -26,13 +26,8 @@ def get_password_hash(password):
 
 async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[str, UUID]:
     try:
-        if not isinstance(SECRET_KEY, str):
-            raise ValueError("SECRET_KEY must be a string")
-
-        if not isinstance(ALGORITHM, str):
-            raise ValueError("ALGORITHM must be a string")
         
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, str(SECRET_KEY), algorithms=[str(ALGORITHM)])
         user_id: UUID = UUID(payload.get("id"))
         # You can add more user-related validation here if needed
         return user_id
@@ -46,13 +41,8 @@ async def get_current_user_dep(token: str = Security(oauth2_scheme)) -> Union[st
 # Function to verify refresh token
 async def validate_refresh_token(refresh_token: str) -> Union[str, None]:
     try:
-        if not isinstance(SECRET_KEY, str):
-            raise ValueError("SECRET_KEY must be a string")
 
-        if not isinstance(ALGORITHM, str):
-            raise ValueError("ALGORITHM must be a string")
-
-        payload: dict[str, Any] = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload: dict[str, Any] = jwt.decode(refresh_token, str(SECRET_KEY), algorithms=[str(ALGORITHM)])
         user_id: Union[str, None] = payload.get("id")
 
         # If user_id is None, the token is invalid
@@ -76,13 +66,7 @@ def create_refresh_token(data: dict, expires_delta: Union[timedelta, None] = Non
 
     to_encode.update({"exp": expire})
 
-    if not isinstance(SECRET_KEY, str):
-        raise ValueError("SECRET_KEY must be a string")
-
-    if not isinstance(ALGORITHM, str):
-        raise ValueError("ALGORITHM must be a string")
-
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, str(SECRET_KEY), algorithm=str(ALGORITHM))
 
     return encoded_jwt
 

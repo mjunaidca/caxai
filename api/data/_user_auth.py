@@ -16,14 +16,13 @@ class InvalidUserException(Exception):
         super().__init__(detail)
 
 
-def get_user(db, username: Union[str, None] = None):
+def get_user(db: Session, username: Union[str, None] = None):
 
     if username is None:
-        raise InvalidUserException(
-            status_code=404, detail="Username not provided")
+        raise InvalidUserException(status_code=404, detail="Username not provided")
 
     user_query = select(USER).where(USER.username == username)
-    user = db.execute(user_query).first()
+    user = db.exec(user_query).first()
 
     if not user:
         raise InvalidUserException(status_code=404, detail="User not found")
@@ -35,11 +34,15 @@ async def db_signup_users(
     user_data: RegisterUser, db: Session
 ):
     # Check if user already exists
-    existing_user_query = select(USER).where((USER.username == user_data.username) | (USER.email == user_data.email))
+    existing_user_email_query = select(USER).where((USER.email == user_data.email))
+    existing_user_email = db.exec(existing_user_email_query).first()
+    if existing_user_email:
+        raise InvalidUserException(status_code=400, detail="Email already registered")
+    
+    existing_user_query = select(USER).where((USER.username == user_data.username))
     existing_user = db.exec(existing_user_query).first()
     if existing_user:
-        raise InvalidUserException(
-            status_code=400, detail="Email or username already registered")
+        raise InvalidUserException(status_code=400, detail="Username already registered")
 
     # Hash the password
     hashed_password = get_password_hash(user_data.password)
