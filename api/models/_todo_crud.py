@@ -1,16 +1,31 @@
-from pydantic import BaseModel, ConfigDict
-from uuid import UUID
 from datetime import datetime
-from typing import Union
+from sqlmodel import SQLModel, Field, Relationship
+from uuid import uuid4, UUID
+from typing import Optional, Union, TYPE_CHECKING
+
+from api.models._user_auth import USER
 
 
-class TODOBase(BaseModel):
+class TODOBase(SQLModel):
     """
     Represents a TODO in the database.
     """
-    title: str
-    description: Union[str, None] = None
-    completed: bool = False
+    title: str = Field(index=True)
+    description: str = Field(default=None, nullable=True)  # Made description optional
+    completed: bool = Field(default=False)
+
+class TODO(TODOBase, table=True):
+    """
+    Represents a TODO in the database.
+    """
+
+    id: UUID | None = Field(primary_key=True, index=True, default_factory=uuid4)
+    
+    updated_at: datetime | None = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
+    created_at: datetime | None = Field(default_factory=datetime.now)
+    # Foreign key to reference the user
+    user_id: Optional[UUID] = Field(default=None, foreign_key="user.id")
+    user: Optional["USER"] = Relationship(back_populates="todos")
 
 
 class TODOCreate(TODOBase):
@@ -29,10 +44,8 @@ class TODOResponse(TODOBase):
     updated_at: datetime
     user_id: UUID
 
-    model_config = ConfigDict(from_attributes=True)
 
-
-class PaginatedTodos(BaseModel):
+class PaginatedTodos(SQLModel):
     """
     Represents a paginated list of TODO items.
     """

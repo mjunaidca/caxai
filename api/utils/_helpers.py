@@ -3,19 +3,16 @@ from passlib.context import CryptContext
 
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Security
-from dotenv import load_dotenv, find_dotenv
-import os
+
 from uuid import UUID
 from fastapi import HTTPException, status
 from typing import Union, Any
 from datetime import datetime, timedelta, timezone
+from api import settings
 
-_: bool = load_dotenv(find_dotenv())
-
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = os.environ.get("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get(
-    "ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

@@ -16,7 +16,8 @@ current_dir = Path(__file__).resolve().parent
 sys.path.append(str(current_dir.parent))
 
 # Now you can use relative imports
-from api.data import _sqlalchemy_models
+from api.models import _todo_crud,_user_auth
+from sqlmodel import SQLModel
 
 _: bool = load_dotenv(find_dotenv())
 
@@ -37,7 +38,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-target_metadata = _sqlalchemy_models.Base.metadata
+target_metadata = SQLModel.metadata
 # target_metadata = None
 
 # other values from the config, defined by the needs of env.py,

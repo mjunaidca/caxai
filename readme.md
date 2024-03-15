@@ -101,7 +101,7 @@ Rename .env.template to .env and add environment variables.
 
 In terminal run:
 
-- `alembic revision --autogenerate -m "Add Todos Table`
+- `alembic revision --autogenerate -m "Add Todos Table"`
 
 - `alembic upgrade head`
 
