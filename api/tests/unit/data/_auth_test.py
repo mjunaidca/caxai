@@ -1,6 +1,8 @@
+from api.data._user_auth import get_user, db_signup_users, InvalidUserException
+from api.models._user_auth import RegisterUser
 import pytest
 from unittest.mock import Mock, patch
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 import sys
 from pathlib import Path
@@ -12,15 +14,14 @@ print("current_dir===========", current_dir)
 # Add the grand grandparent directory ... (the root of your FastAPI application) to sys.path
 sys.path.append(str(current_dir.parent.parent.parent.parent))
 
-from api.models._user_auth import RegisterUser
-from api.data._user_auth import get_user, db_signup_users, InvalidUserException
 
 class TestUserAuthData:
     @pytest.fixture
     def setup(self):
         self.db = Mock(spec=Session)
         self.username = "testuser"
-        self.user_data = RegisterUser(username="testuser", email="testuser@example.com", password="testpassword", full_name="Test User")
+        self.user_data = RegisterUser(
+            username="testuser", email="testuser@example.com", password="testpassword", full_name="Test User")
 
     def test_get_user_no_username(self, setup):
         with pytest.raises(InvalidUserException) as excinfo:
@@ -34,7 +35,6 @@ class TestUserAuthData:
         with pytest.raises(InvalidUserException) as excinfo:
             await db_signup_users(self.user_data, self.db)
         assert str(excinfo.value) == "Email or username already registered"
-
 
     # @patch('sqlalchemy.orm.Session.query')
     # def test_get_user_not_found(self, mock_query, setup):

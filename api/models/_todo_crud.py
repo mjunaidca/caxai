@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 from uuid import uuid4, UUID
-from typing import Optional, Union, TYPE_CHECKING
+from typing import Optional, Union
 
 from api.models._user_auth import USER
 

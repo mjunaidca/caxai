@@ -1,5 +1,5 @@
 from typing import Annotated, Optional
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Form
 from fastapi.security import OAuth2PasswordRequestForm
@@ -9,9 +9,8 @@ from uuid import UUID
 # Now you can use relative imports
 from .data._db_config import get_db
 from .models._user_auth import RegisterUser, UserOutput, LoginResonse, GPTToken
-from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token, gpt_tokens_service
-from .data._db_config import get_db
 from .models._todo_crud import TODOBase, TODOResponse, PaginatedTodos
+from .service._user_auth import service_signup_users, service_login_for_access_token, create_access_token, gpt_tokens_service
 from .service._todos_crud import create_todo_service, get_todo_by_id_service, get_all_todos_service, full_update_todo_service, partial_update_todo_service, delete_todo_data
 from .utils._helpers import get_current_user_dep
 

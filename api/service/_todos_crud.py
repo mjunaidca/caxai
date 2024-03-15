@@ -1,16 +1,14 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException
 
-from ..data._sqlalchemy_models import TODO
-from ..models._todo_crud import TODOBase, TODOResponse
+from ..models._todo_crud import TODOBase, TODO
 from ..data._todos_crud import create_todo_data, get_single_todo_data, get_all_todo_data, full_update_todo_data, partial_update_todo_data, delete_todo_data, TodoNotFoundError
 
 from uuid import UUID
 
 # get all TODO items
-def get_all_todos_service(db: Session, user_id: UUID, offset: int, per_page: int) -> list[TODOResponse]:
+def get_all_todos_service(db: Session, user_id: UUID, offset: int, per_page: int):
     """
     Get all TODO items with pagination from the database.
 
@@ -24,8 +22,8 @@ def get_all_todos_service(db: Session, user_id: UUID, offset: int, per_page: int
         List[TODO]: The list of TODO items.
     """
     try:
-        get_todos: list[TODO] = get_all_todo_data(db, user_id, offset, per_page)
-        return [TODOResponse.model_validate(todo) for todo in get_todos]
+        get_todos = get_all_todo_data(db, user_id, offset, per_page)
+        return get_todos
     except Exception as e:
         # Log the exception for debugging purposes
         print(f"Error getting all TODO items with pagination: {e}")
@@ -64,8 +62,11 @@ def create_todo_service(todo_data: TODOBase, db: Session, user_id: UUID) -> TODO
         TODO: The created TODO item.
     """
     try:
-        db_todo = TODO(title=todo_data.title,
-                       description=todo_data.description, completed=todo_data.completed, user_id=user_id)
+        # Add user_id to the todo_data
+        todo_data.user_id = user_id
+
+        # Validate the data
+        db_todo = TODO.model_validate(todo_data)
         return create_todo_data(db_todo, db)
     except SQLAlchemyError as e:
         print(f"Database error when creating TODO item: {e}")

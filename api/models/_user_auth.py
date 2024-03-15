@@ -25,7 +25,7 @@ class User(SQLModel):
     email_verified: Union[bool, None] = None
 
 
-class USER(SQLModel, table=True):
+class USER(User, table=True):
     """
     Represents a User in the database.
     """

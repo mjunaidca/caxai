@@ -1,14 +1,15 @@
 from typing import Union
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 
-from ._sqlalchemy_models import USER
-from ..models._user_auth import  RegisterUser
+from ..models._user_auth import RegisterUser, USER
 from ..utils._helpers import get_password_hash
+
 
 class InvalidUserException(Exception):
     """
     Exception raised when a user is not found in the database.
     """
+
     def __init__(self, status_code: int, detail: str):
         self.status_code = status_code
         self.detail = detail
@@ -18,10 +19,12 @@ class InvalidUserException(Exception):
 def get_user(db, username: Union[str, None] = None):
 
     if username is None:
-        raise InvalidUserException(status_code=404, detail="Username not provided")
+        raise InvalidUserException(
+            status_code=404, detail="Username not provided")
 
-    user = db.query(USER).filter(USER.username == username).first()
-    
+    user_query = select(USER).where(USER.username == username)
+    user = db.execute(user_query).first()
+
     if not user:
         raise InvalidUserException(status_code=404, detail="User not found")
     print("user", user)
@@ -32,9 +35,11 @@ async def db_signup_users(
     user_data: RegisterUser, db: Session
 ):
     # Check if user already exists
-    existing_user = db.query(USER).filter((USER.username == user_data.username) | (USER.email == user_data.email)).first()
+    existing_user_query = select(USER).where((USER.username == user_data.username) | (USER.email == user_data.email))
+    existing_user = db.exec(existing_user_query).first()
     if existing_user:
-        raise InvalidUserException(status_code=400, detail="Email or username already registered")
+        raise InvalidUserException(
+            status_code=400, detail="Email or username already registered")
 
     # Hash the password
     hashed_password = get_password_hash(user_data.password)
@@ -54,3 +59,4 @@ async def db_signup_users(
 
     # Return the new user data
     return new_user
+

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Optional
 
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 from fastapi import Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -159,8 +159,10 @@ async def service_login_for_access_token(
     )
 
     # Generate refresh token (you might want to set a longer expiry for this)
-    refresh_token_expires = timedelta(minutes=float(REFRESH_TOKEN_EXPIRE_MINUTES))
-    refresh_token = create_refresh_token(data={"sub": user.username, "id": user.id}, expires_delta=refresh_token_expires)
+    refresh_token_expires = timedelta(
+        minutes=float(REFRESH_TOKEN_EXPIRE_MINUTES))
+    refresh_token = create_refresh_token(
+        data={"sub": user.username, "id": user.id}, expires_delta=refresh_token_expires)
 
     return {"access_token": access_token, "token_type": "bearer", "user": user, "expires_in": int(access_token_expires.total_seconds()), "refresh_token": refresh_token}
 
@@ -225,12 +227,16 @@ async def gpt_tokens_service(grant_type: str = Form(...), refresh_token: Optiona
         raise credentials_exception
 
     # Generate access token
-    access_token_expires = timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
-    access_token = create_access_token(data={"id": user_id}, expires_delta=access_token_expires)
+    access_token_expires = timedelta(
+        minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = create_access_token(
+        data={"id": user_id}, expires_delta=access_token_expires)
 
     # Generate refresh token (you might want to set a longer expiry for this)
-    refresh_token_expires = timedelta(minutes=float(REFRESH_TOKEN_EXPIRE_MINUTES))
-    rotated_refresh_token = create_refresh_token(data={"id": user_id}, expires_delta=refresh_token_expires)
+    refresh_token_expires = timedelta(
+        minutes=float(REFRESH_TOKEN_EXPIRE_MINUTES))
+    rotated_refresh_token = create_refresh_token(
+        data={"id": user_id}, expires_delta=refresh_token_expires)
 
     return {
         "access_token": access_token,
