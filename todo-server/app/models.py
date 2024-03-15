@@ -21,7 +21,7 @@ class TODO(TODOBase, table=True):
     updated_at: datetime | None = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
     created_at: datetime | None = Field(default_factory=datetime.now)
     # Foreign key to reference the user
-    user_id: Optional[UUID] = Field(default=None, foreign_key="user.id")
+    user_id: Optional[UUID] = Field(default=None)
 
 
 class TODOCreate(TODOBase):

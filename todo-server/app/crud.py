@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
 from typing import Sequence
 
-from ..models._todo_crud import TODOBase, TODO
+from app.models import TODOBase, TODO
 
 class TodoNotFoundError(Exception):
     """

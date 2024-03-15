@@ -8,9 +8,10 @@ from uuid import UUID
 from contextlib import asynccontextmanager
 
 # Now you can use relative imports
-from app.core.config_db import get_db, create_db_and_tables
 from app.models import RegisterUser, UserOutput, LoginResonse, GPTToken
+from app.core.config_db import get_db, create_db_and_tables
 from app.service import service_signup_users, service_login_for_access_token, create_access_token, gpt_tokens_service
+from app.core.utils import get_current_user_dep
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -112,3 +113,17 @@ async def signup_users(
         UserOutput: User Output
     """
     return await service_signup_users(user_data, db)
+
+# Endpoint that takes token and returns user data
+@app.get("/api/users/me", tags=["User"])
+async def read_users_me(user_id: UUID = Depends(get_current_user_dep)):
+    """
+    Get Current User
+
+    Args:
+        current_user (UserOutput, optional):  Dependency Injection
+
+    Returns:
+        UserOutput: User Output
+    """
+    return user_id

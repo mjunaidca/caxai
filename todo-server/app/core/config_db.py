@@ -1,5 +1,6 @@
-from sqlmodel import create_engine, Session
-from api import settings
+from sqlmodel import create_engine, Session, SQLModel
+from app.core import settings
+from app.models import TODO
 
 # only needed for psycopg 3 - replace postgresql
 # with postgresql+psycopg in settings.DATABASE_URL
@@ -16,3 +17,6 @@ engine = create_engine(
 def get_db():
     with Session(engine) as session:
         yield session
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
