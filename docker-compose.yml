@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  todo-server:
+    image: todo-server
+    build:
+      context: ./todo-server
+      dockerfile: Dockerfile-dev
+    env_file: ".env"
+    container_name: todo-server
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./todo-server:/app # Mount the host code directory into the container
+    depends_on:
+      - auth-server
+      
+  auth-server:
+    image: auth-server
+    build:
+      context: ./auth-server
+      dockerfile: Dockerfile-dev
+    env_file: "./.env"
+    container_name: auth-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./auth-server:/app # Mount the host code directory into the container
+    environment:
+      - NODE_ENV=development
+
