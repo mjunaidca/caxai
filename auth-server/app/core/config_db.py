@@ -1,5 +1,5 @@
 from sqlmodel import create_engine, Session
-from app import settings
+from app.core import settings
 from sqlmodel import SQLModel
 from app.models import USER
 
@@ -15,9 +15,12 @@ engine = create_engine(
 )
 
 # Dependency with retry mechanism for OperationalError
+
+
 def get_db():
     with Session(engine) as session:
         yield session
+
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
