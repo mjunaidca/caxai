@@ -15,13 +15,13 @@ from app.service import create_todo_service, get_todo_by_id_service, get_all_tod
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Creating Tables")
-    create_db_and_tables()
+    # print("Creating Tables")
+    # create_db_and_tables()
     yield
 
 
 app = FastAPI(
-    lifespan=lifespan,
+    # lifespan=lifespan,
     title="Cax",
     description="A multi-user to-do microservice for efficient task management.",
     version="1.0.0",
@@ -35,12 +35,6 @@ app = FastAPI(
         "name": "Apache 2.0",
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    servers=[
-        {
-            "url": "http://localhost:8000",
-            "description": "Development server"
-        },
-    ],
     docs_url="/api/docs"
 )
 
@@ -49,6 +43,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Call Auth Server and get str user_id owith 200 or an error message in JSON - use httpx 
 def get_current_user_dep(token: Annotated[str | None, Depends(oauth2_scheme)]):
     print("get_user_id token", token)
+    print("\n-------\n\\\\\\\\-n  AUTH_SERVER_URL", AUTH_SERVER_URL)
     url = f"{AUTH_SERVER_URL}/api/users/me"
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -64,7 +59,7 @@ def get_current_user_dep(token: Annotated[str | None, Depends(oauth2_scheme)]):
 
 # Get ALL TODOS
 @app.get("/api/todos", response_model=PaginatedTodos, tags=["TODO Crud"])
-def get_todos(db: Session = Depends(get_db), user_id: UUID = Depends(get_current_user_dep), page: int = Query(1, description="Page number", ge=1),
+def get_todos(db: Session = Depends(get_db), user_id = Depends(get_current_user_dep), page: int = Query(1, description="Page number", ge=1),
               per_page: int = Query(10, description="Items per page", ge=1, le=100)):
     """
     Get ALL TODOS

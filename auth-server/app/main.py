@@ -15,13 +15,13 @@ from app.core.utils import get_current_user_dep
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Creating Tables")
-    create_db_and_tables()
+    # print("Creating Tables")
+    # create_db_and_tables()
     yield
 
 
 app = FastAPI(
-    lifespan=lifespan,
+    # lifespan=lifespan,
     title="Cax Auth Server",
     description="Auth Service for multi-user to-do microservice",
     version="1.0.0",
@@ -35,12 +35,6 @@ app = FastAPI(
         "name": "Apache 2.0",
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    servers=[
-        {
-            "url": "http://localhost:8080",
-            "description": "Development server"
-        },
-    ],
     docs_url="/api/docs"
 )
 

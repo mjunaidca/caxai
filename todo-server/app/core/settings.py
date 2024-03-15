@@ -8,4 +8,4 @@ except FileNotFoundError:
 
 DB_URL = config("DB_URL", cast=Secret)
 TEST_DB_URL = config("TEST_DB_URL", cast=Secret)
-AUTH_SERVER_URL = config("AUTH_SERVER_URL", cast=str)
+AUTH_SERVER_URL = config("AUTH_SERVER_URL", cast=Secret)

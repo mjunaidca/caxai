@@ -179,7 +179,7 @@ Thumbs.db
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+.env.gcp.yaml
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
