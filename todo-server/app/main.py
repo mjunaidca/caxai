@@ -15,13 +15,13 @@ from app.service import create_todo_service, get_todo_by_id_service, get_all_tod
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # print("Creating Tables")
-    # create_db_and_tables()
+    print("Creating Tables")
+    create_db_and_tables()
     yield
 
 
 app = FastAPI(
-    # lifespan=lifespan,
+    lifespan=lifespan,
     title="Cax",
     description="A multi-user to-do microservice for efficient task management.",
     version="1.0.0",

@@ -4,11 +4,35 @@ Implementation of Microservices GenUI Architecture. The Current Microservices ar
 
 - auth-server: Auth Server to manage Authentication & Authorization
 - todo-server: Simple ToDo Server to authenticate using auth-server & perform TODOs Crud.
-- nextjs-client: Conversational GenUI & TODOs Manager platform for you.
+- nextjs-client: Conversational UI & TODOs Manager platform for you.
+
+# Running Locally & Development:
+
+You can setup & run the project locally on your machine or on docker. Firstly let'e setup the env vars.
+
+- In auth-server
+` Rename .env.example to .env and add DB_URL, TEST_DB_URL, SECRET_KEY `
+
+- In todo-server add DB_URL & TEST_DB_URL. They can be same as above or different
+
+- For nextjs-client run pnpm install - no need to update them
+
+### 1. Local Machine
+
+Open root dir i.e: cax in terminal and run 
+
+1. Terminal 1: `make auth` & visit `http://localhost:8080/api/docs`
+2. Terminal 2: `make todo` & visit `http://localhost:8000/api/docs`
+3. Terminal 3: `make next` & visit `http://localhost:3000`
 
 
+### 2. Docker
 
-# Deployment
+Rename root .env.example to .env and add the missing env vars (DB_URL=, TEST_DB_URL=, SECRET_KEY=)
+
+Run: `docker compose -d up`
+
+# Deployment:
 
 We will be deploying FastAPI Microservices to Google Cloud Run and NextJS CUI to Vercel.
 

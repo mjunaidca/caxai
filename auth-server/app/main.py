@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    # lifespan=lifespan,
+    lifespan=lifespan,
     title="Cax Auth Server",
     description="Auth Service for multi-user to-do microservice",
     version="1.0.0",
