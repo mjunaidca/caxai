@@ -1,7 +1,7 @@
 from typing import Annotated, Optional
 from sqlmodel import Session
 
-from fastapi import Depends, FastAPI, Form
+from fastapi import Depends, FastAPI, Form, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from uuid import UUID
@@ -15,8 +15,8 @@ from app.core.utils import get_current_user_dep
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # print("Creating Tables")
-    # create_db_and_tables()
+    print("Creating Tables")
+    create_db_and_tables()
     yield
 
 
@@ -51,7 +51,14 @@ async def login_authorization(form_data: Annotated[OAuth2PasswordRequestForm, De
     Returns:
         LoginResonse: Login Response
     """
-    return await service_login_for_access_token(form_data, db)
+    try: 
+        return await service_login_for_access_token(form_data, db)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        print("Exception", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.post("/api/oauth/token", response_model=GPTToken, tags=["OAuth2 Authentication"])
 async def tokens_manager_oauth_codeflow(

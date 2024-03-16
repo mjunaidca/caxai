@@ -18,16 +18,22 @@ class InvalidUserException(Exception):
 
 def get_user(db: Session, username: Union[str, None] = None):
 
-    if username is None:
-        raise InvalidUserException(status_code=404, detail="Username not provided")
+    try:
+        if username is None:
+            raise InvalidUserException(status_code=404, detail="Username not provided")
 
-    user_query = select(USER).where(USER.username == username)
-    user = db.exec(user_query).first()
+        user_query = select(USER).where(USER.username == username)
+        user = db.exec(user_query).first()
 
-    if not user:
-        raise InvalidUserException(status_code=404, detail="User not found")
-    print("user", user)
-    return user
+        if not user:
+            raise InvalidUserException(status_code=404, detail="User not found")
+        print("user", user)
+        return user
+    except InvalidUserException:
+        raise
+    except Exception as e:
+        print("Exception", e)
+        raise InvalidUserException(status_code=400, detail=str(e))
 
 
 async def db_signup_users(

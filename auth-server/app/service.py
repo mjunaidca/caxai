@@ -38,13 +38,16 @@ def authenticate_user(db, username: str, password: str):
     Returns:
         user: The authenticated user object if the credentials are valid, False otherwise.
     """
-    user = get_user(db, username)
-    if not user:
-        return False
-    print("\n ------------- \n user.hashed_password", user.hashed_password)
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
+    try: 
+        user = get_user(db, username)
+        if not user:
+            return False
+        print("\n ------------- \n user.hashed_password", user.hashed_password)
+        if not verify_password(password, user.hashed_password):
+            return False
+        return user
+    except InvalidUserException:
+        raise
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
@@ -126,26 +129,31 @@ async def service_login_for_access_token(
     Returns:
         dict: A dictionary containing the access token, token type, and user information.
     """
-    user = authenticate_user(db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+    try:
+        user = authenticate_user(db, form_data.username, form_data.password)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        access_token_expires = timedelta(
+            minutes=float(str(ACCESS_TOKEN_EXPIRE_MINUTES)))
+        access_token = create_access_token(
+            data={"sub": user.username, "id": user.id}, expires_delta=access_token_expires
         )
-    access_token_expires = timedelta(
-        minutes=float(str(ACCESS_TOKEN_EXPIRE_MINUTES)))
-    access_token = create_access_token(
-        data={"sub": user.username, "id": user.id}, expires_delta=access_token_expires
-    )
 
-    # Generate refresh token (you might want to set a longer expiry for this)
-    refresh_token_expires = timedelta(
-        minutes=float(str(REFRESH_TOKEN_EXPIRE_MINUTES)))
-    refresh_token = create_refresh_token(
-        data={"sub": user.username, "id": user.id}, expires_delta=refresh_token_expires)
+        # Generate refresh token (you might want to set a longer expiry for this)
+        refresh_token_expires = timedelta(
+            minutes=float(str(REFRESH_TOKEN_EXPIRE_MINUTES)))
+        refresh_token = create_refresh_token(
+            data={"sub": user.username, "id": user.id}, expires_delta=refresh_token_expires)
 
-    return {"access_token": access_token, "token_type": "bearer", "user": user, "expires_in": int(access_token_expires.total_seconds()), "refresh_token": refresh_token}
+        return {"access_token": access_token, "token_type": "bearer", "user": user, "expires_in": int(access_token_expires.total_seconds()), "refresh_token": refresh_token}
+    except InvalidUserException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 async def service_signup_users(
