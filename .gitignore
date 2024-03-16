@@ -180,6 +180,7 @@ Thumbs.db
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 .env.gcp.yaml
+.env_bak
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
