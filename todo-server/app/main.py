@@ -56,6 +56,9 @@ def get_current_user_dep(token: Annotated[str | None, Depends(oauth2_scheme)]):
     else:
         raise HTTPException(status_code=response.status_code, detail=response.json().get('detail'))
 
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 # Get ALL TODOS
 @app.get("/api/todos", response_model=PaginatedTodos, tags=["TODO Crud"])

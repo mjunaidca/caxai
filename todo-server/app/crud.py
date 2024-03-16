@@ -29,8 +29,6 @@ def get_all_todo_data(db: Session, user_id: UUID, offset: int, per_page: int) ->
     try:
         query = select(TODO).where(TODO.user_id == user_id).offset(offset).limit(per_page)
         results = db.exec(query).all()
-        if not results:
-            raise TodoNotFoundError("No TODO items found")
         return results
     except SQLAlchemyError as e:
         # Log the exception for debugging purposes
