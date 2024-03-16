@@ -55,14 +55,14 @@ const page = async ({
           Navigate to manage, Create, Add, Delete & View Todos
         </p>
         <div className="flex flex-col justify-center items-center space-y-5">
-          <Link
+          {/* <Link
             href="https://chat.openai.com/g/g-fC8sZoDCi-cax-taskpal"
             target="_blank"
           >
             <Button variant="secondary" size="lg">
               TaskPal GPT 🤖
             </Button>
-          </Link>
+          </Link> */}
           <Link href="/dashboard/manage">
             <Button variant="secondary" size="lg">
               Manage ToDos

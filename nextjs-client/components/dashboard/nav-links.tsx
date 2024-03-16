@@ -9,7 +9,7 @@ import { HomeIcon, ListTodo, ViewIcon, AtomIcon } from 'lucide-react';
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Cax TaskPal GPT 🤖', href: "https://chat.openai.com/g/g-fC8sZoDCi-cax-taskpal", icon: AtomIcon },
+  // { name: 'Cax TaskPal GPT 🤖', href: "https://chat.openai.com/g/g-fC8sZoDCi-cax-taskpal", icon: AtomIcon },
   {
     name: 'Manage All Tasks',
     href: '/dashboard/manage',
