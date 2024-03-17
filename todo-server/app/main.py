@@ -1,5 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException, Query, Header
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Session
 
 from uuid import UUID
@@ -55,6 +55,26 @@ def get_current_user_dep(token: Annotated[str | None, Depends(oauth2_scheme)]):
         return response.json()
     else:
         raise HTTPException(status_code=response.status_code, detail=response.json().get('detail'))
+
+
+# Call Auth Server to login and get token using /token endpoint - use httpx
+@app.post("/api/token")
+def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    # Send a POST request to the Auth Server's /api/oauth/login endpoint with form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    url = f"{AUTH_SERVER_URL}/api/oauth/login"
+    data = {
+        "username": form_data.username,
+        "password": form_data.password
+    }
+    response = httpx.post(url, data=data)
+
+    if response.status_code == 200:
+        return response.json()
+    
+    raise HTTPException(status_code=response.status_code, detail=response.json().get('detail'))
+    
+
+
 
 @app.get("/")
 def read_root():
